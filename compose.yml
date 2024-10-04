@@ -1,0 +1,10 @@
+services:
+  db:
+    image: mariadb:latest
+    environment:
+      MYSQL_DATABASE: mariadb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: mypass
+      MYSQL_ROOT_PASSWORD: mypass
+    ports:
+      - "3306:3306"

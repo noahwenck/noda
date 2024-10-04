@@ -1,0 +1,41 @@
+<html xmlns:th="https://www.thymeleaf.org">
+<script th:src="@{/js/home.js}"></script>
+
+<head>
+    <meta charset="UTF-8"/>
+    <title>Noda</title>
+</head>
+
+<body>
+<div id="navbar-top">
+    <div id="search-div">
+        <select class="form-control" id="option-list" onchange="updateSearchDiv()">
+            <option value="null">Select Option</option>
+            <option th:each="option : ${#lists.sort(options)}" th:value="${option}" th:text="${option}"/>
+        </select>
+        <button id="search-button" onclick="search()">Search</button>
+    </div>
+
+    <div id="sort-div">
+        <button id="sort-button" onclick="sort()">Sort</button> <!--todo: add sort functionality-->
+    </div>
+</div>
+
+<div th:if="${error}">
+    <h2>No films returned for this search.</h2>
+</div>
+
+<div id="elements-div" th:if="${error==null and elements!=null and !elements.isEmpty()}" th:data-elements="${type}">
+    <ul id="elements-list" th:data-value="${elements}" >
+        <li th:each="element : ${elements}">
+            <a th:text="${element.name}"/>
+            <article th:if="${type == 'films'}" hidden th:data-link="|film/${element.name}-${element.year}|"></article>
+            <article th:if="${type == 'directors'}" hidden th:data-link="|director/${element.name}|"></article>
+            <article th:if="${type == 'spokenLanguages'}" hidden th:data-link="|film/language/spoken/${element.name}|"></article>
+        </li>
+    </ul>
+
+</div>
+
+</body>
+</html>

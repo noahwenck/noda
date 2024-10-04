@@ -1,0 +1,75 @@
+<html xmlns:th="https://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${film.name}"/>
+</head>
+<body>
+
+<div>
+  <h1><a th:text="${film.name}"/></h1>
+  <h2><a th:text="${film.year}"/></h2>
+
+    <div>
+        <h3>Director</h3>
+        <ul>
+            <li th:each="dir : ${film.director}">
+                <a th:text="${dir.name}"/>
+            </li>
+        </ul>
+    </div>
+
+    <div>
+        <h3>Primary Language</h3>
+        <p th:text="${film.primaryLanguage}"/>
+    </div>
+
+    <div>
+        <h3>Spoken Language</h3>
+        <ul>
+            <li th:each="lang : ${film.spokenLanguage}">
+                <a th:text="${lang.name}"/>
+            </li>
+        </ul>
+    </div>
+
+    <div>
+        <h3>Country</h3>
+        <ul>
+            <li th:each="country : ${film.country}">
+                <a th:text="${country}"/>
+            </li>
+        </ul>
+    </div>
+
+    <div>
+        <h3>Runtime</h3>
+        <p th:text="${film.runtime}"/>
+    </div>
+
+    <div>
+        <h3>Average Rating</h3>
+        <p th:text="${film.averageRating}"/>
+    </div>
+
+    <div>
+        <h3>Genre</h3>
+        <ul>
+            <li th:each="genre : ${film.genre}">
+                <a th:text="${genre}"/>
+            </li>
+        </ul>
+    </div>
+
+    <div>
+        <h3>Studio</h3>
+        <ul>
+            <li th:each="studio : ${film.studio}">
+                <a th:text="${studio}"/>
+            </li>
+        </ul>
+    </div>
+</div>
+
+</body>
+</html>
