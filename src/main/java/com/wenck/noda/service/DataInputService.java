@@ -37,7 +37,8 @@ public class DataInputService {
         int existingFilmsCount = 0;
         final long startTime = System.currentTimeMillis();
         try {
-            List<Map<String, Object>> data = objectMapper.readValue(JsonObject, new TypeReference<>(){});
+            List<Map<String, Object>> data = objectMapper.readValue(JsonObject, new TypeReference<>() {
+            });
             for (Map<String, Object> map : data) {
                 Film film = new Film();
                 Set<String> directorNames = new HashSet<>();
@@ -46,7 +47,7 @@ public class DataInputService {
                         case "Name" -> film.setName((String) map.get(key));
                         case "Director" -> directorNames = new HashSet<>((Collection) map.get(key));
                         case "Year" -> film.setYear((Integer) map.get(key));
-                        case "Primary Language" -> film.setPrimaryLanguage((String) map.get(key));
+                        case "Primary Language" -> film.setPrimaryLanguage(parseSingleLanguage((String) map.get(key), true));
                         case "Spoken Language" -> film.setSpokenLanguage(parseSpokenLanguage(map, key));
                         case "Country" -> film.setCountry(new HashSet<>((Collection) map.get(key)));
                         case "Runtime" -> film.setRuntime((Integer) map.get(key));
@@ -109,31 +110,24 @@ public class DataInputService {
         return true;
     }
 
-    private Language parsePrimaryLanguage(String languageName) {
+    // todo: change params they ugly
+    private Set<Language> parseSpokenLanguage(Map<String, Object> map, String key) {
+        Set<Language> spokenLanguage = new HashSet<>();
+        for (Object language : (Collection) map.get(key)) {
+            spokenLanguage.add(parseSingleLanguage((String) language, false));
+        }
+        return spokenLanguage;
+    }
+
+    private Language parseSingleLanguage(String languageName, boolean primaryLanguage) {
         Language existingLanguage = languageRepository.findByName(languageName);
         if (existingLanguage == null) {
-            Language newLanguage = new Language(languageName);
+            Language newLanguage = new Language(languageName, primaryLanguage);
             languageRepository.save(newLanguage);
             return newLanguage;
         } else {
             return existingLanguage;
         }
-    }
-
-    // todo: change params they ugly
-    private Set<Language> parseSpokenLanguage(Map<String, Object> map, String key) {
-        Set<Language> spokenLanguage = new HashSet<>();
-        for (Object language : (Collection) map.get(key)) {
-            Language existingLanguage = languageRepository.findByName((String) language);
-            if (existingLanguage == null) {
-                Language newLanguage = new Language((String) language);
-                languageRepository.save(newLanguage);
-                spokenLanguage.add(newLanguage);
-            } else {
-                spokenLanguage.add(existingLanguage);
-            }
-        }
-        return spokenLanguage;
     }
 
     //todo: investigate if this can be done like this

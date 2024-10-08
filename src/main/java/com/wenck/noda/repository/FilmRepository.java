@@ -19,7 +19,7 @@ public interface FilmRepository extends JpaRepository<Film, Integer> {
     @Query("SELECT f FROM film f JOIN f.director d WHERE d.id = :id")
     List<Film> findByDirector(int id);
 
-    @Query("SELECT f FROM film f JOIN f.spokenLanguage s WHERE s.id = :id")
-    List<Film> findyBySpokenLanguage(int id);
+    @Query("SELECT f FROM film f JOIN f.spokenLanguage s WHERE s.name = :name")
+    List<Film> findyBySpokenLanguage(String name);
 
 }

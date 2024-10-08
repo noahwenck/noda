@@ -10,7 +10,7 @@ public class ControllerService {
 
     public void appendBasicsToModel(String type, Model model) {
         // Set of options that a user can search from
-        model.addAttribute("options", List.of("Year", "Director", "Spoken Language"));
+        model.addAttribute("options", List.of("Year", "Director", "Primary Language", "Spoken Language"));
 
         // Tells frontend how to properly render urls
         model.addAttribute("type", type);

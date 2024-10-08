@@ -9,12 +9,18 @@ document.addEventListener("DOMContentLoaded", function() {
 function search() {
     const option = document.getElementById('option-list').value.toLowerCase();
 
-    if (option === null) {
-        return;
-    } else if (option === "director") {
-        window.location.href = "http://localhost:8080/" + option;
-    } else if (option === "spoken language") {
-        window.location.href = "http://localhost:8080/film/language/spoken";
+    switch (option) {
+        case null:
+            return;
+        case "director":
+            window.location.href = baseUrl + option;
+            break;
+        case "primary language":
+            window.location.href = baseUrl + "film/language/primary";
+            break;
+        case "spoken language":
+            window.location.href = baseUrl + "film/language/spoken";
+            break;
     }
 
     const year = document.getElementById('search-param').value;

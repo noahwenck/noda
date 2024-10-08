@@ -12,7 +12,7 @@ public class Film {
     private Set<Director> director;
     private int year;
     // todo: convert to language
-    private String primaryLanguage;
+    private Language primaryLanguage;
     private Set<Language> spokenLanguage;
     private Set<String> country;
     private int runtime;
@@ -66,13 +66,13 @@ public class Film {
         this.year = year;
     }
 
-//    @ManyToOne
-    @Column(name = "PRIMARY_LANGUAGE")
-    public String getPrimaryLanguage() {
+    @ManyToOne
+    @JoinColumn(name = "PRIMARY_LANGUAGE")
+    public Language getPrimaryLanguage() {
         return primaryLanguage;
     }
 
-    public void setPrimaryLanguage(String primaryLanguage) {
+    public void setPrimaryLanguage(Language primaryLanguage) {
         this.primaryLanguage = primaryLanguage;
     }
 

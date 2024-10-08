@@ -7,31 +7,21 @@ import java.util.Set;
 
 @Entity(name="language")
 public class Language {
-
-    private int id;
     private String name;
     private Set<Film> films;
+    private boolean primaryLanguage;
 
     public Language() {
 
     }
 
-    public Language(String name) {
+    public Language(String name, boolean primaryLanguage) {
         this.name = name;
         this.films = new HashSet<>();
+        this.primaryLanguage = primaryLanguage;
     }
 
     @Id
-    @GeneratedValue(strategy =  GenerationType.IDENTITY)
-    @Column(name = "LANGUAGE_ID")
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
     @Column(name = "NAME", nullable = false)
     public String getName() {
         return name;
@@ -48,5 +38,14 @@ public class Language {
 
     public void setFilms(Set<Film> films) {
         this.films = films;
+    }
+
+    @Column(name = "PRIMARY_LANGUAGE")
+    public boolean isPrimaryLanguage() {
+        return primaryLanguage;
+    }
+
+    public void setPrimaryLanguage(boolean primary) {
+        this.primaryLanguage = primary;
     }
 }

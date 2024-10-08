@@ -74,8 +74,40 @@ public class FilmController {
         return "home";
     }
 
-    @GetMapping("language/spoken")
+    @GetMapping("language/primary")
     public String getPrimaryLanguageList(Model model) {
+
+        controllerService.appendBasicsToModel("primaryLanguages", model);
+
+        List<Language> primaryLanguages = languageRepository.findPrimaryLanguages();
+        if (primaryLanguages.isEmpty()) {
+            model.addAttribute("error", true);
+        } else {
+            model.addAttribute("elements", primaryLanguages);
+        }
+
+        return "home";
+    }
+
+    @GetMapping("language/primary/{languageName}")
+    public String getFilmsByPrimaryLanguages(@PathVariable String languageName,
+                                            Model model) {
+
+        controllerService.appendBasicsToModel(TYPE, model);
+
+        Language language = languageRepository.findByName(languageName);
+        if (languageName == null) {
+            model.addAttribute("error", true);
+        } else {
+            model.addAttribute("elements",
+                    filmRepository.findyBySpokenLanguage(language.getName()));
+        }
+
+        return "home";
+    }
+
+    @GetMapping("language/spoken")
+    public String getSpokenLanguageList(Model model) {
 
         controllerService.appendBasicsToModel("spokenLanguages", model);
 
@@ -100,7 +132,7 @@ public class FilmController {
             model.addAttribute("error", true);
         } else {
             model.addAttribute("elements",
-                    filmRepository.findyBySpokenLanguage(language.getId()));
+                    filmRepository.findyBySpokenLanguage(language.getName()));
         }
 
         return "home";

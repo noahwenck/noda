@@ -31,6 +31,7 @@
             <a th:text="${element.name}"/>
             <article th:if="${type == 'films'}" hidden th:data-link="|film/${element.name}-${element.year}|"></article>
             <article th:if="${type == 'directors'}" hidden th:data-link="|director/${element.name}|"></article>
+            <article th:if="${type == 'primaryLanguages'}" hidden th:data-link="|film/language/primary/${element.name}|"></article>
             <article th:if="${type == 'spokenLanguages'}" hidden th:data-link="|film/language/spoken/${element.name}|"></article>
         </li>
     </ul>
