@@ -65,11 +65,7 @@ public class FilmController {
         controllerService.appendBasicsToModel(TYPE, model);
 
         List<Film> films = filmRepository.findByYear(year);
-        if (films == null || films.isEmpty()) {
-            model.addAttribute("error", true);
-        } else {
-            model.addAttribute("elements", films);
-        }
+        controllerService.appendListElementsToModel(films, model);
 
         return "home";
     }
@@ -80,11 +76,7 @@ public class FilmController {
         controllerService.appendBasicsToModel("primaryLanguages", model);
 
         List<Language> primaryLanguages = languageRepository.findPrimaryLanguages();
-        if (primaryLanguages.isEmpty()) {
-            model.addAttribute("error", true);
-        } else {
-            model.addAttribute("elements", primaryLanguages);
-        }
+        controllerService.appendListElementsToModel(primaryLanguages, model);
 
         return "home";
     }
@@ -96,12 +88,8 @@ public class FilmController {
         controllerService.appendBasicsToModel(TYPE, model);
 
         Language language = languageRepository.findByName(languageName);
-        if (languageName == null) {
-            model.addAttribute("error", true);
-        } else {
-            model.addAttribute("elements",
-                    filmRepository.findyBySpokenLanguage(language.getName()));
-        }
+        List<Film> films = filmRepository.findyBySpokenLanguage(language.getName());
+        controllerService.appendListElementsToModel(films, model);
 
         return "home";
     }
@@ -112,11 +100,7 @@ public class FilmController {
         controllerService.appendBasicsToModel("spokenLanguages", model);
 
         List<Language> spokenLanguages = languageRepository.findAll();
-        if (spokenLanguages.isEmpty()) {
-            model.addAttribute("error", true);
-        } else {
-            model.addAttribute("elements", spokenLanguages);
-        }
+        controllerService.appendListElementsToModel(spokenLanguages, model);
 
         return "home";
     }
@@ -128,12 +112,8 @@ public class FilmController {
         controllerService.appendBasicsToModel(TYPE, model);
 
         Language language = languageRepository.findByName(languageName);
-        if (languageName == null) {
-            model.addAttribute("error", true);
-        } else {
-            model.addAttribute("elements",
-                    filmRepository.findyBySpokenLanguage(language.getName()));
-        }
+        List<Film> films = filmRepository.findyBySpokenLanguage(language.getName());
+        controllerService.appendListElementsToModel(films, model);
 
         return "home";
     }

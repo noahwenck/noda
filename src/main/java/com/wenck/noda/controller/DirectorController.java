@@ -1,6 +1,7 @@
 package com.wenck.noda.controller;
 
 import com.wenck.noda.entity.Director;
+import com.wenck.noda.entity.Film;
 import com.wenck.noda.repository.DirectorRepository;
 import com.wenck.noda.repository.FilmRepository;
 import com.wenck.noda.service.ControllerService;
@@ -35,8 +36,7 @@ public class DirectorController {
         controllerService.appendBasicsToModel(DIRECTORS, model);
 
         List<Director> directors = directorRepository.findAll();
-
-        model.addAttribute("elements", directors);
+        controllerService.appendListElementsToModel(directors, model);
 
         return "home";
     }
@@ -48,12 +48,8 @@ public class DirectorController {
         controllerService.appendBasicsToModel("films", model);
 
         Director director = directorRepository.findByName(directorName);
-        if (director == null) {
-            model.addAttribute("error", true);
-        } else {
-            model.addAttribute("elements",
-                    filmRepository.findByDirector(director.getId()));
-        }
+        List<Film> films = filmRepository.findByDirector(director.getId());
+        controllerService.appendListElementsToModel(films, model);
 
         return "home";
     }
