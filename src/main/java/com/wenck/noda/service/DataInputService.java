@@ -37,8 +37,7 @@ public class DataInputService {
         int existingFilmsCount = 0;
         final long startTime = System.currentTimeMillis();
         try {
-            List<Map<String, Object>> data = objectMapper.readValue(JsonObject, new TypeReference<>() {
-            });
+            List<Map<String, Object>> data = objectMapper.readValue(JsonObject, new TypeReference<>() {});
             for (Map<String, Object> map : data) {
                 Film film = new Film();
                 Set<String> directorNames = new HashSet<>();

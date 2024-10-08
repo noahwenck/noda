@@ -11,7 +11,6 @@ public class Film {
     private String name;
     private Set<Director> director;
     private int year;
-    // todo: convert to language
     private Language primaryLanguage;
     private Set<Language> spokenLanguage;
     private Set<String> country;
