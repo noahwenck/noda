@@ -1,6 +1,7 @@
 package com.wenck.noda.service;
 
 import com.wenck.noda.entity.*;
+import com.wenck.noda.entity.film.*;
 import com.wenck.noda.repository.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;

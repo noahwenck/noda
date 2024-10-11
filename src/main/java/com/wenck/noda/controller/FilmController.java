@@ -1,6 +1,6 @@
 package com.wenck.noda.controller;
 
-import com.wenck.noda.entity.*;
+import com.wenck.noda.entity.film.*;
 import com.wenck.noda.repository.*;
 import com.wenck.noda.service.ControllerService;
 import org.slf4j.Logger;

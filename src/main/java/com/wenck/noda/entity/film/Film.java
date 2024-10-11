@@ -1,5 +1,6 @@
-package com.wenck.noda.entity;
+package com.wenck.noda.entity.film;
 
+import com.wenck.noda.entity.*;
 import jakarta.persistence.*;
 
 import java.util.Set;

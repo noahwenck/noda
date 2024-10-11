@@ -1,6 +1,6 @@
 package com.wenck.noda.repository;
 
-import com.wenck.noda.entity.Genre;
+import com.wenck.noda.entity.film.Genre;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

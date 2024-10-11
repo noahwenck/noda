@@ -1,6 +1,6 @@
 package com.wenck.noda.repository;
 
-import com.wenck.noda.entity.Studio;
+import com.wenck.noda.entity.film.Studio;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

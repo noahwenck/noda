@@ -1,7 +1,7 @@
 package com.wenck.noda.controller;
 
 import com.wenck.noda.entity.Director;
-import com.wenck.noda.entity.Film;
+import com.wenck.noda.entity.film.Film;
 import com.wenck.noda.repository.DirectorRepository;
 import com.wenck.noda.repository.FilmRepository;
 import com.wenck.noda.service.ControllerService;

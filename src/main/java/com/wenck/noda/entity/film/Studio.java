@@ -1,5 +1,6 @@
-package com.wenck.noda.entity;
+package com.wenck.noda.entity.film;
 
+import com.wenck.noda.entity.film.Film;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -8,15 +9,15 @@ import jakarta.persistence.ManyToMany;
 import java.util.HashSet;
 import java.util.Set;
 
-@Entity(name = "country")
-public class Country {
+@Entity(name = "studio")
+public class Studio {
 
     private String name;
     private Set<Film> films;
 
-    public Country() {}
+    public Studio() {}
 
-    public Country(String name) {
+    public Studio(String name) {
         this.name = name;
         this.films = new HashSet<>();
     }
@@ -31,7 +32,7 @@ public class Country {
         this.name = name;
     }
 
-    @ManyToMany(mappedBy = "country")
+    @ManyToMany(mappedBy = "studio")
     public Set<Film> getFilms() {
         return films;
     }

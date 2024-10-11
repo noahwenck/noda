@@ -1,6 +1,6 @@
 package com.wenck.noda.repository;
 
-import com.wenck.noda.entity.Film;
+import com.wenck.noda.entity.film.Film;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
