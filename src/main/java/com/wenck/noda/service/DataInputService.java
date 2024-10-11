@@ -1,11 +1,7 @@
 package com.wenck.noda.service;
 
-import com.wenck.noda.entity.Director;
-import com.wenck.noda.entity.Film;
-import com.wenck.noda.entity.Language;
-import com.wenck.noda.repository.DirectorRepository;
-import com.wenck.noda.repository.FilmRepository;
-import com.wenck.noda.repository.LanguageRepository;
+import com.wenck.noda.entity.*;
+import com.wenck.noda.repository.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,21 +15,31 @@ import java.util.*;
 public class DataInputService {
 
     private static final Logger LOG = LoggerFactory.getLogger(DataInputService.class);
+    private final CountryRepository countryRepository;
     private final DirectorRepository directorRepository;
     private final FilmRepository filmRepository;
+    private final GenreRepository genreRepository;
     private final LanguageRepository languageRepository;
+    private final StudioRepository studioRepository;
 
-    public DataInputService(DirectorRepository directorRepository,
+    public DataInputService(CountryRepository countryRepository,
+                            DirectorRepository directorRepository,
                             FilmRepository filmRepository,
-                            LanguageRepository languageRepository) {
+                            GenreRepository genreRepository,
+                            LanguageRepository languageRepository,
+                            StudioRepository studioRepository) {
+        this.countryRepository = countryRepository;
         this.directorRepository = directorRepository;
         this.filmRepository = filmRepository;
+        this.genreRepository = genreRepository;
         this.languageRepository = languageRepository;
+        this.studioRepository = studioRepository;
     }
 
     public boolean handleJSONParse(String JsonObject) {
 
         ObjectMapper objectMapper = new ObjectMapper();
+        int newFilmsCount = 0;
         int existingFilmsCount = 0;
         final long startTime = System.currentTimeMillis();
         try {
@@ -43,29 +49,26 @@ public class DataInputService {
                 Set<String> directorNames = new HashSet<>();
                 for (String key : map.keySet()) {
                     switch (key) {
-                        case "Name" -> film.setName((String) map.get(key));
-                        case "Director" -> directorNames = new HashSet<>((Collection) map.get(key));
-                        case "Year" -> film.setYear((Integer) map.get(key));
-                        case "Primary Language" -> film.setPrimaryLanguage(parseSingleLanguage((String) map.get(key), true));
-                        case "Spoken Language" -> film.setSpokenLanguage(parseSpokenLanguage(map, key));
-                        case "Country" -> film.setCountry(new HashSet<>((Collection) map.get(key)));
-                        case "Runtime" -> film.setRuntime((Integer) map.get(key));
-                        case "Average Rating" -> film.setAverageRating((Double) map.get(key));
-                        case "Genre" -> {
-                            film.setGenre(new HashSet<>((Collection) map.get(key)));
-                            //todo figure out why this enum aint working
-//                            System.out.println(map.get(key));
-//                            Set<Genre> genres = new HashSet<>();
-//                            for (Object genre : (Collection<String>) map.get(key)) {
-//                                try {
-//                                    genres.add(Genre.valueOf(genre.toString()));
-//                                } catch (IllegalArgumentException ex) {
-//                                    LOG.warn("Unknown genre found, genre={}", genre);
-//                                }
-//                            }
-//                            film.setGenre(genres);
-                        }
-                        case "Studio" -> film.setStudio(new HashSet<>((Collection) map.get(key)));
+                        case "Name" ->
+                                film.setName((String) map.get(key));
+                        case "Director" ->
+                                directorNames = new HashSet<>((Collection) map.get(key));
+                        case "Year" ->
+                                film.setYear((Integer) map.get(key));
+                        case "Primary Language" ->
+                                film.setPrimaryLanguage(parseSingleLanguage((String) map.get(key), true));
+                        case "Spoken Language" ->
+                                film.setSpokenLanguage(parseSpokenLanguage((List<Object>) map.get(key)));
+                        case "Country" ->
+                                film.setCountry(parseCountry((List<Object>) map.get(key)));
+                        case "Runtime" ->
+                                film.setRuntime((Integer) map.get(key));
+                        case "Average Rating" ->
+                                film.setAverageRating((Double) map.get(key));
+                        case "Genre" ->
+                                film.setGenre(parseGenre((List<Object>) map.get(key)));
+                        case "Studio" ->
+                                film.setStudio(parseStudio((List<Object>) map.get(key)));
                     }
                 }
 
@@ -89,6 +92,7 @@ public class DataInputService {
 
                 Film existingFilm = filmRepository.findByNameAndYear(film.getName(), film.getYear());
                 if (existingFilm == null) {
+                    newFilmsCount++;
                     filmRepository.save(film);
                 } else {
                     existingFilmsCount++;
@@ -102,6 +106,9 @@ public class DataInputService {
         final long durationMs = System.currentTimeMillis() - startTime;
         LOG.info("Processed JSON object, durationMs={}", durationMs);
 
+        if (newFilmsCount > 0) {
+            LOG.info("New films added, newFilmsCounts={}", newFilmsCount);
+        }
         if (existingFilmsCount > 0) {
             LOG.info("Duplicate films found, existingFilmsCount={}", existingFilmsCount);
         }
@@ -109,10 +116,11 @@ public class DataInputService {
         return true;
     }
 
-    // todo: change params they ugly
-    private Set<Language> parseSpokenLanguage(Map<String, Object> map, String key) {
+    // todo somehow combine these methods, too much repetition for such basic functionality
+
+    private Set<Language> parseSpokenLanguage(List<Object> json) {
         Set<Language> spokenLanguage = new HashSet<>();
-        for (Object language : (Collection) map.get(key)) {
+        for (Object language : json) {
             spokenLanguage.add(parseSingleLanguage((String) language, false));
         }
         return spokenLanguage;
@@ -127,6 +135,51 @@ public class DataInputService {
         } else {
             return existingLanguage;
         }
+    }
+
+    private Set<Country> parseCountry(List<Object> json) {
+        Set<Country> countrySet = new HashSet<>();
+        for (Object country : json) {
+            Country existingCountry = countryRepository.findByName((String) country);
+            if (existingCountry == null) {
+                Country newCountry = new Country((String) country);
+                countryRepository.save(newCountry);
+                countrySet.add(newCountry);
+            } else {
+                countrySet.add(existingCountry);
+            }
+        }
+        return countrySet;
+    }
+
+    private Set<Genre> parseGenre(List<Object> json) {
+        Set<Genre> genreSet = new HashSet<>();
+        for (Object genre : json) {
+            Genre existingGenre = genreRepository.findByName((String) genre);
+            if (existingGenre == null) {
+                Genre newGenre = new Genre((String) genre);
+                genreRepository.save(newGenre);
+                genreSet.add(newGenre);
+            } else {
+                genreSet.add(existingGenre);
+            }
+        }
+        return genreSet;
+    }
+
+    private Set<Studio> parseStudio(List<Object> json) {
+        Set<Studio> studioSet = new HashSet<>();
+        for (Object studio : json) {
+            Studio existingStudio = studioRepository.findByName((String) studio);
+            if (existingStudio == null) {
+                Studio newStudio = new Studio((String) studio);
+                studioRepository.save(newStudio);
+                studioSet.add(newStudio);
+            } else {
+                studioSet.add(existingStudio);
+            }
+        }
+        return studioSet;
     }
 
     //todo: investigate if this can be done like this

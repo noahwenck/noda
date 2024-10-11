@@ -33,6 +33,9 @@
             <article th:if="${type == 'directors'}" hidden th:data-link="|director/${element.name}|"></article>
             <article th:if="${type == 'primaryLanguages'}" hidden th:data-link="|film/language/primary/${element.name}|"></article>
             <article th:if="${type == 'spokenLanguages'}" hidden th:data-link="|film/language/spoken/${element.name}|"></article>
+            <article th:if="${type == 'genre'}" hidden th:data-link="|film/genre/${element.name}|"></article>
+            <article th:if="${type == 'country'}" hidden th:data-link="|film/country/${element.name}|"></article>
+            <article th:if="${type == 'studio'}" hidden th:data-link="|film/studio/${element.name}|"></article>
         </li>
     </ul>
 

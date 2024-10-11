@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 
 import java.util.Set;
 
-@Entity(name="director")
+@Entity(name = "director")
 public class Director {
 
     private int id;

@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface LanguageRepository extends JpaRepository<Language, Integer> {
+public interface LanguageRepository extends JpaRepository<Language, String> {
 
     /**
      * Get the {@link Language} associated with the name

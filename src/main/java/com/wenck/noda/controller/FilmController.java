@@ -1,10 +1,7 @@
 package com.wenck.noda.controller;
 
-import com.wenck.noda.entity.Film;
-import com.wenck.noda.entity.Language;
-import com.wenck.noda.repository.DirectorRepository;
-import com.wenck.noda.repository.FilmRepository;
-import com.wenck.noda.repository.LanguageRepository;
+import com.wenck.noda.entity.*;
+import com.wenck.noda.repository.*;
 import com.wenck.noda.service.ControllerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,18 +18,27 @@ public class FilmController {
     private static final Logger LOG = LoggerFactory.getLogger(FilmController.class);
     private static final String TYPE = "films";
     private final ControllerService controllerService;
+    private final CountryRepository countryRepository;
     private final DirectorRepository directorRepository;
     private final FilmRepository filmRepository;
+    private final GenreRepository genreRepository;
     private final LanguageRepository languageRepository;
+    private final StudioRepository studioRepository;
 
     public FilmController(ControllerService controllerService,
+                          CountryRepository countryRepository,
                           DirectorRepository directorRepository,
                           FilmRepository filmRepository,
-                          LanguageRepository languageRepository) {
+                          GenreRepository genreRepository,
+                          LanguageRepository languageRepository,
+                          StudioRepository studioRepository) {
         this.controllerService = controllerService;
+        this.countryRepository = countryRepository;
         this.directorRepository = directorRepository;
         this.filmRepository = filmRepository;
+        this.genreRepository = genreRepository;
         this.languageRepository = languageRepository;
+        this.studioRepository = studioRepository;
     }
 
 
@@ -88,7 +94,7 @@ public class FilmController {
         controllerService.appendBasicsToModel(TYPE, model);
 
         Language language = languageRepository.findByName(languageName);
-        List<Film> films = filmRepository.findyBySpokenLanguage(language.getName());
+        List<Film> films = filmRepository.findBySpokenLanguage(language.getName());
         controllerService.appendListElementsToModel(films, model);
 
         return "home";
@@ -112,7 +118,79 @@ public class FilmController {
         controllerService.appendBasicsToModel(TYPE, model);
 
         Language language = languageRepository.findByName(languageName);
-        List<Film> films = filmRepository.findyBySpokenLanguage(language.getName());
+        List<Film> films = filmRepository.findBySpokenLanguage(language.getName());
+        controllerService.appendListElementsToModel(films, model);
+
+        return "home";
+    }
+
+    @GetMapping("genre")
+    public String getGenreList(Model model) {
+
+        controllerService.appendBasicsToModel("genre", model);
+
+        List<Genre> genres = genreRepository.findAll();
+        controllerService.appendListElementsToModel(genres, model);
+
+        return "home";
+    }
+
+    @GetMapping("genre/{genreName}")
+    public String getFilmsByGenre(@PathVariable String genreName,
+                                  Model model) {
+
+        controllerService.appendBasicsToModel(TYPE, model);
+        //todo need validation here, and catch NPE
+        Genre genre = genreRepository.findByName(genreName);
+        List<Film> films = filmRepository.findByGenre(genre.getName());
+        controllerService.appendListElementsToModel(films, model);
+
+        return "home";
+    }
+
+    @GetMapping("studio")
+    public String getStudioList(Model model) {
+
+        controllerService.appendBasicsToModel("studio", model);
+
+        List<Studio> studios = studioRepository.findAll();
+        controllerService.appendListElementsToModel(studios, model);
+
+        return "home";
+    }
+
+    @GetMapping("studio/{studioName}")
+    public String getFilmsByStudio(@PathVariable String studioName,
+                                  Model model) {
+
+        controllerService.appendBasicsToModel(TYPE, model);
+        //todo need validation here, and catch NPE
+        Studio studio = studioRepository.findByName(studioName);
+        List<Film> films = filmRepository.findByStudio(studio.getName());
+        controllerService.appendListElementsToModel(films, model);
+
+        return "home";
+    }
+
+    @GetMapping("country")
+    public String getCountryList(Model model) {
+
+        controllerService.appendBasicsToModel("country", model);
+
+        List<Country> countries = countryRepository.findAll();
+        controllerService.appendListElementsToModel(countries, model);
+
+        return "home";
+    }
+
+    @GetMapping("country/{countryName}")
+    public String getFilmsByCountry(@PathVariable String countryName,
+                                  Model model) {
+
+        controllerService.appendBasicsToModel(TYPE, model);
+        //todo need validation here, and catch NPE
+        Country country = countryRepository.findByName(countryName);
+        List<Film> films = filmRepository.findByCountry(country.getName());
         controllerService.appendListElementsToModel(films, model);
 
         return "home";

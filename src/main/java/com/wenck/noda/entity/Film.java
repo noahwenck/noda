@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 
 import java.util.Set;
 
-@Entity(name="film")
+@Entity(name = "film")
 public class Film {
 
     private int id;
@@ -13,11 +13,11 @@ public class Film {
     private int year;
     private Language primaryLanguage;
     private Set<Language> spokenLanguage;
-    private Set<String> country;
+    private Set<Country> country;
     private int runtime;
     private double averageRating;
-    private Set<String> genre;
-    private Set<String> studio;
+    private Set<Genre> genre;
+    private Set<Studio> studio;
 
     public Film() {
         // Hi there!
@@ -88,13 +88,17 @@ public class Film {
         this.spokenLanguage = spokenLanguage;
     }
 
-    @ElementCollection
-    @Column(name = "COUNTRY")
-    public Set<String> getCountry() {
+    @ManyToMany
+    @JoinTable(
+            name = "film_country",
+            joinColumns = @JoinColumn(name = "FILM_ID"),
+            inverseJoinColumns = @JoinColumn(name = "COUNTRY")
+    )
+    public Set<Country> getCountry() {
         return country;
     }
 
-    public void setCountry(Set<String> country) {
+    public void setCountry(Set<Country> country) {
         this.country = country;
     }
 
@@ -116,23 +120,31 @@ public class Film {
         this.averageRating = averageRating;
     }
 
-    @ElementCollection
-    @Column(name = "GENRE")
-    public Set<String> getGenre() {
+    @ManyToMany
+    @JoinTable(
+            name = "film_genre",
+            joinColumns = @JoinColumn(name = "FILM_ID"),
+            inverseJoinColumns = @JoinColumn(name = "GENRE")
+    )
+    public Set<Genre> getGenre() {
         return genre;
     }
 
-    public void setGenre(Set<String> genre) {
+    public void setGenre(Set<Genre> genre) {
         this.genre = genre;
     }
 
-    @ElementCollection
-    @Column(name = "STUDIO")
-    public Set<String> getStudio() {
+    @ManyToMany
+    @JoinTable(
+            name = "film_studio",
+            joinColumns = @JoinColumn(name = "FILM_ID"),
+            inverseJoinColumns = @JoinColumn(name = "GENRE")
+    )
+    public Set<Studio> getStudio() {
         return studio;
     }
 
-    public void setStudio(Set<String> studio) {
+    public void setStudio(Set<Studio> studio) {
         this.studio = studio;
     }
 }

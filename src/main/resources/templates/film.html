@@ -1,5 +1,9 @@
 <html xmlns:th="https://www.thymeleaf.org">
 
+<script>
+    const baseUrl = "http://localhost:8080/";
+</script>
+
 <head>
     <meta charset="UTF-8">
     <title th:text="${film.name}"/>
@@ -21,7 +25,7 @@
 
     <div>
         <h3>Primary Language</h3>
-        <p th:text="${film.primaryLanguage}"/>
+        <p th:text="${film.primaryLanguage.name}"/>
     </div>
 
     <div>
@@ -37,7 +41,7 @@
         <h3>Country</h3>
         <ul>
             <li th:each="country : ${film.country}">
-                <a th:text="${country}"/>
+                <a th:text="${country.name}"/>
             </li>
         </ul>
     </div>
@@ -56,7 +60,7 @@
         <h3>Genre</h3>
         <ul>
             <li th:each="genre : ${film.genre}">
-                <a th:text="${genre}"/>
+                <a th:text="${genre.name}"/>
             </li>
         </ul>
     </div>
@@ -65,7 +69,7 @@
         <h3>Studio</h3>
         <ul>
             <li th:each="studio : ${film.studio}">
-                <a th:text="${studio}"/>
+                <a th:text="${studio.name}" th:href=""/>
             </li>
         </ul>
     </div>

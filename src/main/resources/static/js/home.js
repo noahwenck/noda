@@ -21,6 +21,11 @@ function search() {
         case "spoken language":
             window.location.href = baseUrl + "film/language/spoken";
             break;
+        case "genre":
+        case "studio":
+        case "country":
+            window.location.href = baseUrl + "film/" + option;
+            break;
     }
 
     const year = document.getElementById('search-param').value;
