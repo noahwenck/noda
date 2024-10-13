@@ -52,6 +52,22 @@ public class FilmController {
         return "home";
     }
 
+    @GetMapping("/list/{name}")
+    public String getFilmByName(@PathVariable String name,
+                                Model model) {
+
+        List<Film> films = filmRepository.findByName(name);
+        if (films.size() == 1) {
+            // todo: do we want sort/search on film page? if so add basics here
+            model.addAttribute("film", films.get(0));
+            return "film";
+        } else {
+            controllerService.appendBasicsToModel(TYPE, model);
+            controllerService.appendListElementsToModel(films, model); // this also accounts for empty list
+            return "home";
+        }
+    }
+
     @GetMapping("/{name}-{year}")
     public String getFilm(@PathVariable String name,
                           @PathVariable String year,

@@ -12,27 +12,27 @@
 
 <div>
   <h1><a th:text="${film.name}"/></h1>
-  <h2><a th:text="${film.year}"/></h2>
+  <h2><a th:text="${film.year}" th:href="@{/film/year/{year}(year=${film.year})}"/></h2>
 
     <div>
         <h3>Director</h3>
         <ul>
             <li th:each="dir : ${film.director}">
-                <a th:text="${dir.name}"/>
+                <a th:text="${dir.name}" th:href="@{/director/{directorName}(directorName=${dir.name})}"/>
             </li>
         </ul>
     </div>
 
     <div>
         <h3>Primary Language</h3>
-        <p th:text="${film.primaryLanguage.name}"/>
+        <a th:text="${film.primaryLanguage.name}" th:href="@{/film/language/primary/{languageName}(languageName=${film.primaryLanguage.name})}"/>
     </div>
 
     <div>
         <h3>Spoken Language</h3>
         <ul>
             <li th:each="lang : ${film.spokenLanguage}">
-                <a th:text="${lang.name}"/>
+                <a th:text="${lang.name}" th:href="@{/film/language/spoken/{languageName}(languageName=${lang.name})}"/>
             </li>
         </ul>
     </div>
@@ -41,7 +41,7 @@
         <h3>Country</h3>
         <ul>
             <li th:each="country : ${film.country}">
-                <a th:text="${country.name}"/>
+                <a th:text="${country.name}" th:href="@{/film/country/{countryName}(countryName=${country.name})}"/>
             </li>
         </ul>
     </div>
@@ -60,7 +60,7 @@
         <h3>Genre</h3>
         <ul>
             <li th:each="genre : ${film.genre}">
-                <a th:text="${genre.name}"/>
+                <a th:text="${genre.name}" th:href="@{/film/genre/{genreName}(genreName=${genre.name})}"/>
             </li>
         </ul>
     </div>
@@ -69,7 +69,7 @@
         <h3>Studio</h3>
         <ul>
             <li th:each="studio : ${film.studio}">
-                <a th:text="${studio.name}" th:href=""/>
+                <a th:text="${studio.name}" th:href="@{/film/studio/{studioName}(studioName=${studio.name})}"/>
             </li>
         </ul>
     </div>

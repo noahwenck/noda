@@ -6,12 +6,30 @@ document.addEventListener("DOMContentLoaded", function() {
    addLinksToElements();
 });
 
+/**
+ * Very Beautifully and well done search functionality
+ */
 function search() {
     const option = document.getElementById('option-list').value.toLowerCase();
 
+    /*
+        The Search Input needs to:
+            1. Exist.
+            2. Have something actually entered into it.
+        to actually use it for navigation.
+     */
+    let searchParamExists = false;
+    let searchParam = null;
+    if (document.getElementById('search-param') != null &&
+            document.getElementById('search-param').value != null &&
+            document.getElementById('search-param').value !== "") {
+        searchParam = document.getElementById('search-param').value;
+        searchParamExists = true;
+    }
+
     switch (option) {
         case null:
-            return;
+            return; // todo should i be returning everywhere instead of breaking?
         case "director":
             window.location.href = baseUrl + option;
             break;
@@ -26,23 +44,54 @@ function search() {
         case "country":
             window.location.href = baseUrl + "film/" + option;
             break;
+        case "year":
+            if (searchParamExists) {
+                window.location.href = baseUrl + "film/" + option + "/" + searchParam;
+            }
+            break;
+        case "film":
+            if (searchParamExists) {
+                window.location.href = baseUrl + "film/list/" + searchParam;
+            } else {
+                window.location.href = baseUrl;
+            }
+            break;
     }
-
-    const year = document.getElementById('search-param').value;
-    window.location.href = "http://localhost:8080/film/" + option + "/" + year;
 }
 
+/**
+ * Updates the search div with whatever extra functionality that I want to add mid-use.
+ *
+ * For example - If the user has selected to search by year, add an input to let them enter the year.
+ */
 function updateSearchDiv() {
     const option = document.getElementById('option-list').value;
-    if (option === "Year") {
-        let yearSearch = document.createElement("input");
-        yearSearch.setAttribute("id", "search-param");
-        yearSearch.setAttribute("placeholder", "Year");
+    if (option === "Year" || option === "Film") {
+        if (document.getElementById('search-param') != null) {
+            const placeholderValue = document.getElementById('search-param').getAttribute("placeholder");
+            if (placeholderValue === option) {
+                return;
+            } else { // Don't want duplicate search inputs, so remove the existing one.
+                document.getElementById('search-div').removeChild(
+                    document.getElementById('search-param')
+                );
+            }
+        }
+
+        let searchInput = document.createElement("input");
+        searchInput.setAttribute("id", "search-param");
+        searchInput.setAttribute("placeholder", option)
 
         document.getElementById("search-div").insertBefore(
-            yearSearch,
+            searchInput,
             document.getElementById("search-button")
         );
+    } else { // remove search input for options that don't need it
+        if (document.getElementById('search-param') != null) {
+            document.getElementById('search-div').removeChild(
+                    document.getElementById('search-param')
+                );
+            }
     }
 }
 
@@ -64,7 +113,7 @@ function addSortSelection() {
 }
 
 /**
- * Only alphabetically for now
+ * Only alphabetically for now - need to add stuff on backend to actually sort by
  */
 function sort() {
     let ul = document.getElementById("elements-list")

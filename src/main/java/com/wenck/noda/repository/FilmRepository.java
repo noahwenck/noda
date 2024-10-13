@@ -13,6 +13,9 @@ public interface FilmRepository extends JpaRepository<Film, Integer> {
     @Query("SELECT f FROM film f WHERE f.name = :name AND f.year = :year")
     Film findByNameAndYear(String name, int year);
 
+    @Query("SELECT f FROM film f WHERE f.name = :name")
+    List<Film> findByName(String name);
+
     @Query("SELECT f FROM film f WHERE f.year = ?1")
     List<Film> findByYear(int year);
 

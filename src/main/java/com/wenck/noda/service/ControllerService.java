@@ -17,12 +17,13 @@ public class ControllerService<T> {
         // Set of options that a user can search from
         model.addAttribute("options",
                 List.of("Year",
-                "Director",
-                "Primary Language",
-                "Spoken Language",
-                "Studio",
-                "Genre",
-                "Country"));
+                        "Director",
+                        "Primary Language",
+                        "Spoken Language",
+                        "Studio",
+                        "Genre",
+                        "Country",
+                        "Film")); // Added in no particular order, I just don't care to reorder
 
         // Tells frontend how to properly render urls
         model.addAttribute("type", type);
