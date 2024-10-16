@@ -1,7 +1,6 @@
 <html xmlns:th="https://www.thymeleaf.org">
-
 <script>
-    const baseUrl = "http://localhost:8080/";
+    const baseUrl = "http://localhost:8080/"
 </script>
 
 <head>
@@ -9,6 +8,10 @@
     <title th:text="${film.name}"/>
 </head>
 <body>
+
+<div>
+    <button id="home-button" onclick="location.href = baseUrl;">Return To Home</button>
+</div>
 
 <div>
   <h1><a th:text="${film.name}"/></h1>

@@ -5,6 +5,7 @@ import com.wenck.noda.service.DataInputService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -19,6 +20,11 @@ public class DataInputController {
                                DataInputService dataInputService) {
         this.controllerService = controllerService;
         this.dataInputService = dataInputService;
+    }
+
+    @GetMapping("/data")
+    public String directToInputPage() {
+        return "dataInput";
     }
 
     @PostMapping("/asJSON")

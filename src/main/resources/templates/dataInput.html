@@ -1,0 +1,30 @@
+<html xmlns:th="https://www.thymeleaf.org">
+<script src="/js/dataInput.js"></script>
+<head>
+    <meta charset="UTF-8">
+    <title>Noda Input</title>
+</head>
+<body>
+
+<div>
+    <div>
+        <input id="search-input" placeholder="Letterboxd Username">
+        <select id="option-list">
+            <option value="films">Films</option>
+            <option value="likes">Likes</option>
+        </select>
+        <button id="search-button" onclick="getFlask()">Gather Info</button>
+    </div>
+    <div>
+        <button id="home-button" onclick="location.href = baseUrl;">Return To Home</button>
+    </div>
+</div>
+
+<div id="elements-div">
+    <ul id="elements-list">
+<!--        todo: add in dataInput.js upon retrieval of info from web scraper -->
+    </ul>
+</div>
+
+</body>
+</html>
