@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import java.util.Set;
 
 @Entity(name = "film")
-public class Film {
+public class Film extends BaseEntity {
 
     private int id;
     private String name;

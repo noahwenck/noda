@@ -1,6 +1,6 @@
 package com.wenck.noda.entity.film;
 
-import com.wenck.noda.entity.film.Film;
+import com.wenck.noda.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -10,7 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity(name = "genre")
-public class Genre {
+public class Genre extends BaseEntity {
     private String name;
     private Set<Film> films;
 
