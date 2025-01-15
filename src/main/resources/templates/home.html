@@ -1,37 +1,73 @@
+<!doctype html>
 <html xmlns:th="https://www.thymeleaf.org">
 <script th:src="@{/js/home.js}"></script>
 
 <head>
     <meta charset="UTF-8"/>
     <title>Noda</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
 
 <body>
-<div id="navbar-top">
-    <div id="search-div">
-        <select class="form-control" id="option-list" onchange="updateSearchDiv()">
-            <option value="null">Select Option</option>
-            <option th:each="option : ${#lists.sort(options)}" th:value="${option}" th:text="${option}"/>
-        </select>
-        <button id="search-button" onclick="search()">Search</button>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Noda</a>
+<!--        todo get this somewhere else on navbar - not centered between other divs, feels awkward-->
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#collectionModal">
+            Add Data
+        </button>
+<!--        <form class="d-flex" id="search-form" role="search" onsubmit="search()"> todo: make form-->
+        <div class="d-flex" id="search-form" role="search" onsubmit="search()">
+            <select class="form-select" id="option-list" onchange="updateSearchDiv()">
+                <option value="null" selected>Select Search Category</option>
+                <option th:each="option : ${#lists.sort(options)}" th:value="${option}" th:text="${option}"/>
+            </select>
+            <button class="btn btn-outline-secondary" id="search-button">Search</button>
+        </div>
     </div>
+</nav>
 
-    <div id="sort-div">
-        <button id="sort-button" onclick="sort()">Sort</button> <!--todo: add sort functionality-->
-    </div>
-
-    <div>
-        <button id="input-button" onclick="location.href = baseUrl + 'input/data';">Collect Information</button>
+<!-- Data Collection Modal -->
+<div class="modal fade" id="collectionModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Input Letterboxd Username for Data</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+<!--                todo: get padding between top and bottom of this div to be even -->
+                <div class="input-group mb-3">
+                        <input class="input-group-text" id="username-input" placeholder="Letterboxd Username">
+<!--                    todo: make checkbox group -->
+                        <select class="form-select" id="collection-option">
+                            <option value="films">Films</option>
+                            <option value="likes">Likes</option>
+                        </select>
+                        <button class="btn btn-outline-primary" onclick="getFlaskResponse()" data-bs-dismiss="modal">
+                        Gather Data
+                        </button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
+<!--todo add to navbar?-->
+<!--    <div id="sort-div">-->
+<!--        <button id="sort-button" onclick="sort()">Sort</button> &lt;!&ndash;todo: add sort functionality&ndash;&gt;-->
+<!--    </div>-->
+<!--</div>-->
 
 <div th:if="${error}">
     <h2>No films returned for this search.</h2>
 </div>
 
-<div id="elements-div" th:if="${error==null and elements!=null and !elements.isEmpty()}" th:data-elements="${type}">
-    <ul id="elements-list" th:data-value="${elements}" >
-        <li th:each="element : ${elements}">
+<div class="container text-center" th:if="${error==null and elements!=null and !elements.isEmpty()}" th:data-elements="${type}">
+    <div id="elements-rows" class="row row-cols-5">
+        <div class="col border" th:each="element : ${elements}">
             <a th:text="${element.name}"/>
             <article th:if="${type == 'films'}" hidden th:data-link="|film/${element.name}-${element.year}|"></article>
             <article th:if="${type == 'directors'}" hidden th:data-link="|director/${element.name}|"></article>
@@ -40,9 +76,8 @@
             <article th:if="${type == 'genre'}" hidden th:data-link="|film/genre/${element.name}|"></article>
             <article th:if="${type == 'country'}" hidden th:data-link="|film/country/${element.name}|"></article>
             <article th:if="${type == 'studio'}" hidden th:data-link="|film/studio/${element.name}|"></article>
-        </li>
-    </ul>
-
+        </div>
+    </div>
 </div>
 
 </body>

@@ -22,11 +22,6 @@ public class DataInputController {
         this.dataInputService = dataInputService;
     }
 
-    @GetMapping("/data")
-    public String directToInputPage() {
-        return "dataInput";
-    }
-
     @PostMapping("/asJSON")
     public String handleJSONParse(@RequestParam String films) {
 
