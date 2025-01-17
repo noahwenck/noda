@@ -149,18 +149,28 @@ function addLinksToElements() {
     }
 }
 
-async function getFlaskResponse() {
-    console.log("Beginning to gather Letterboxd Information")
+async function requestDataFromFlask() {
+    console.log("Beginning to gather Letterboxd Information");
+
+    const potentialTypes = ["films", "likes", "watchlist"];
+    let types = [];
+    for (const type of potentialTypes) {
+        if (document.getElementById(type).checked) {
+            types.push(type);
+        }
+    }
 
     const user = document.getElementById("username-input").value;
-    const type = document.getElementById("collection-option").value;
 
-    const response = await fetch(flaskUrl + user + "/" + type);
+    for (const type of types) {
+        console.log("Fetching info for user: " + user + ", of type: " + type);
 
-    if (response.ok) {
-        console.log("Response from Web Scraper: " + response.status);
-        alert("Films have been added to Noda.")
-    } else {
-        console.error("Response from Web Scraper: " + response.status);
+        const response = await fetch(flaskUrl + user + "/" + type);
+
+        if (response.ok) {
+            console.log("Response from Web Scraper: " + response.status + ", for user: " + user + ", of type: " + type);
+        } else {
+            console.error("Response from Web Scraper: " + response.status + ", for user: " + user + ", of type: " + type);
+        }
     }
 }
