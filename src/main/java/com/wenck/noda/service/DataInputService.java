@@ -70,6 +70,8 @@ public class DataInputService {
                                 film.setGenre(parseGenre((List<Object>) map.get(key)));
                         case "Studio" ->
                                 film.setStudio(parseStudio((List<Object>) map.get(key)));
+                        case "Base64 Poster" ->
+                                film.setBase64Poster((String) map.get(key));
                     }
                 }
 
@@ -155,16 +157,21 @@ public class DataInputService {
 
     private Set<Genre> parseGenre(List<Object> json) {
         Set<Genre> genreSet = new HashSet<>();
-        for (Object genre : json) {
-            Genre existingGenre = genreRepository.findByName((String) genre);
-            if (existingGenre == null) {
-                Genre newGenre = new Genre((String) genre);
-                genreRepository.save(newGenre);
-                genreSet.add(newGenre);
-            } else {
-                genreSet.add(existingGenre);
+        if (json != null) { // todo do this for rest
+            for (Object genre : json) {
+                Genre existingGenre = genreRepository.findByName((String) genre);
+                if (existingGenre == null) {
+                    Genre newGenre = new Genre((String) genre);
+                    genreRepository.save(newGenre);
+                    genreSet.add(newGenre);
+                } else {
+                    genreSet.add(existingGenre);
+                }
             }
+        } else {
+            genreSet = new HashSet<>();
         }
+
         return genreSet;
     }
 

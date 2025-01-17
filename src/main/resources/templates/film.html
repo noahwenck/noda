@@ -1,80 +1,148 @@
 <html xmlns:th="https://www.thymeleaf.org">
-<script>
-    const baseUrl = "http://localhost:8080/"
-</script>
 
 <head>
     <meta charset="UTF-8">
     <title th:text="${film.name}"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
+
 <body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
-<div>
-    <button id="home-button" onclick="location.href = baseUrl;">Return To Home</button>
-</div>
-
-<div>
-  <h1><a th:text="${film.name}"/></h1>
-  <h2><a th:text="${film.year}" th:href="@{/film/year/{year}(year=${film.year})}"/></h2>
-
-    <div>
-        <h3>Director</h3>
-        <ul>
-            <li th:each="dir : ${film.director}">
-                <a th:text="${dir.name}" th:href="@{/director/{directorName}(directorName=${dir.name})}"/>
-            </li>
-        </ul>
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="http://localhost:8080/">Noda</a>
     </div>
+</nav>
 
-    <div>
-        <h3>Primary Language</h3>
-        <a th:text="${film.primaryLanguage.name}" th:href="@{/film/language/primary/{languageName}(languageName=${film.primaryLanguage.name})}"/>
+<div class="container-fluid text-center bg-secondary text-white">
+    <div class="row row-cols-3 align-items-center mb-3">
+        <div class="col-3">
+<!--        Leaving Empty to properly align film.name -->
+        </div>
+        <div class="col-6">
+            <h1>
+                <a class="text-white" th:text="${film.name}"/>
+            </h1>
+        </div>
+        <div class="col-3">
+            <a class="btn btn-dark" th:text="${film.year}" th:href="@{/film/year/{year}(year=${film.year})}"/>
+        </div>
     </div>
-
-    <div>
-        <h3>Spoken Language</h3>
-        <ul>
-            <li th:each="lang : ${film.spokenLanguage}">
-                <a th:text="${lang.name}" th:href="@{/film/language/spoken/{languageName}(languageName=${lang.name})}"/>
-            </li>
-        </ul>
+    <div class="row row-cols-3 align-items-center mb-3">
+        <div class="col">
+            <div class="row row-cols-1 gy-3">
+                <div class="col">
+                    <div class="row">
+                        <div class="col-4 align-self-center">
+                            <h2>Director</h2>
+                        </div>
+                        <div class="col-8 align-self-center">
+                            <div class="row row-cols-2 gy-1 justify-content-center">
+                                <div class="col-6" th:each="dir : ${film.director}">
+                                    <a class="btn btn-dark" th:text="${dir.name}" th:href="@{/director/{directorName}(directorName=${dir.name})}"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col border-top border-bottom">
+                    <div class="row">
+                        <div class="col-4 align-self-center">
+                            <h2>Runtime</h2>
+                        </div>
+                        <div class="col-8 align-self-center">
+                            <p th:text="${film.runtime} + ' Minutes'"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="row">
+                        <div class="col-4 align-self-center">
+                            <h2>Average Rating</h2>
+                        </div>
+                        <div class="col-8 align-self-center">
+                            <p th:text="${film.averageRating} + ' / 5'"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <img th:src="'data:image/jpeg;base64,' + ${film.base64Poster}" th:alt="${film.name}">
+        </div>
+        <div class="col">
+            <div class="row row-cols-1 gy-3">
+                <div class="col">
+                    <div class="row">
+                        <div class="col-4 align-self-center">
+                            <h2>Primary Language</h2>
+                        </div>
+                        <div class="col-8 align-self-center">
+                            <a class="btn btn-dark"th:text="${film.primaryLanguage.name}" th:href="@{/film/language/primary/{languageName}(languageName=${film.primaryLanguage.name})}"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col border-top border-bottom">
+                    <div class="row">
+                        <div class="col-4 align-self-center">
+                            <h2>Spoken Language</h2>
+                        </div>
+                        <div class="col-8 align-self-center">
+                            <div class="row row-cols-2 gy-1 justify-content-center">
+                                <div class="col-6" th:each="lang : ${film.spokenLanguage}">
+                                    <a class="btn btn-dark" th:text="${lang.name}" th:href="@{/film/language/spoken/{languageName}(languageName=${lang.name})}"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="row">
+                        <div class="col-4 align-self-center">
+                            <h2>Country</h2>
+                        </div>
+                        <div class="col-8 align-self-center">
+                            <div class="row row-cols-2 gy-1 justify-content-center">
+                                <div class="col-6" th:each="country : ${film.country}">
+                                    <a class="btn btn-dark" th:text="${country.name}" th:href="@{/film/country/{countryName}(countryName=${country.name})}"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <div>
-        <h3>Country</h3>
-        <ul>
-            <li th:each="country : ${film.country}">
-                <a th:text="${country.name}" th:href="@{/film/country/{countryName}(countryName=${country.name})}"/>
-            </li>
-        </ul>
-    </div>
-
-    <div>
-        <h3>Runtime</h3>
-        <p th:text="${film.runtime}"/>
-    </div>
-
-    <div>
-        <h3>Average Rating</h3>
-        <p th:text="${film.averageRating}"/>
-    </div>
-
-    <div>
-        <h3>Genre</h3>
-        <ul>
-            <li th:each="genre : ${film.genre}">
-                <a th:text="${genre.name}" th:href="@{/film/genre/{genreName}(genreName=${genre.name})}"/>
-            </li>
-        </ul>
-    </div>
-
-    <div>
-        <h3>Studio</h3>
-        <ul>
-            <li th:each="studio : ${film.studio}">
-                <a th:text="${studio.name}" th:href="@{/film/studio/{studioName}(studioName=${studio.name})}"/>
-            </li>
-        </ul>
+    <div class="row row-cols-2 align-items-center">
+        <div class="col border-end">
+            <div class="row">
+                <div class="col align-self-center">
+                    <h2>Genre</h2>
+                </div>
+                <div class="col-8 align-self-center">
+                    <div class="row row-cols-2 gy-1 justify-content-center">
+                        <div class="col-6" th:each="genre : ${film.genre}">
+                            <a class="btn btn-dark" th:text="${genre.name}" th:href="@{/film/genre/{genreName}(genreName=${genre.name})}"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="row row-cols-2">
+                <div class="col-4 align-self-center">
+                    <h2>Studio</h2>
+                </div>
+                <div class="col-8 align-self-center">
+                    <div class="row row-cols-2 gy-1 justify-content-center">
+                        <div class="col-6" th:each="studio : ${film.studio}">
+                            <a class="btn btn-dark" th:text="${studio.name}" th:href="@{/film/studio/{studioName}(studioName=${studio.name})}"></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

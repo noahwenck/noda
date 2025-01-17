@@ -5,7 +5,6 @@ const flaskUrl = "http://localhost:5000/"
 // TODO: with Bootstrap - a lot of this may have to be rewritten
 
 document.addEventListener("DOMContentLoaded", function() {
-   // addSortSelection();
    addLinksToElements();
 });
 

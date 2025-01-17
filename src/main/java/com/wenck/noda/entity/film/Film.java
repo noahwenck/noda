@@ -19,7 +19,7 @@ public class Film extends BaseEntity {
     private double averageRating;
     private Set<Genre> genre;
     private Set<Studio> studio;
-
+    private String base64Poster;
     public Film() {
         // Hi there!
     }
@@ -147,5 +147,14 @@ public class Film extends BaseEntity {
 
     public void setStudio(Set<Studio> studio) {
         this.studio = studio;
+    }
+
+    @Column(name = "BASE64_POSTER", columnDefinition = "LONGTEXT")
+    public String getBase64Poster() {
+        return base64Poster;
+    }
+
+    public void setBase64Poster(String base64Poster) {
+        this.base64Poster = base64Poster;
     }
 }

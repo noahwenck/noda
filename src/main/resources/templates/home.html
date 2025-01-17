@@ -12,19 +12,19 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">Noda</a>
+        <a class="navbar-brand" href="http://localhost:8080/">Noda</a>
 <!--        todo get this somewhere else on navbar - not centered between other divs, feels awkward-->
         <!-- Button trigger modal -->
         <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#collectionModal">
             Add Data
         </button>
 <!--        <form class="d-flex" id="search-form" role="search" onsubmit="search()"> todo: make form-->
-        <div class="d-flex" id="search-form" role="search" onsubmit="search()">
+        <div class="d-flex" id="search-form" role="search">
             <select class="form-select" id="option-list" onchange="updateSearchDiv()">
                 <option value="null" selected>Select Search Category</option>
                 <option th:each="option : ${#lists.sort(options)}" th:value="${option}" th:text="${option}"/>
             </select>
-            <button class="btn btn-outline-secondary" id="search-button">Search</button>
+            <button class="btn btn-outline-secondary" id="search-button" onclick="search()">Search</button>
         </div>
     </div>
 </nav>
@@ -45,6 +45,7 @@
                         <select class="form-select" id="collection-option">
                             <option value="films">Films</option>
                             <option value="likes">Likes</option>
+                            <option value="watchlist">Watchlist</option>
                         </select>
                         <button class="btn btn-outline-primary" onclick="getFlaskResponse()" data-bs-dismiss="modal">
                         Gather Data
@@ -65,10 +66,13 @@
     <h2>No films returned for this search.</h2>
 </div>
 
-<div class="container text-center" th:if="${error==null and elements!=null and !elements.isEmpty()}" th:data-elements="${type}">
-    <div id="elements-rows" class="row row-cols-5">
-        <div class="col border" th:each="element : ${elements}">
-            <a th:text="${element.name}"/>
+<div class="container-fluid text-center bg-secondary" th:if="${error==null and elements!=null and !elements.isEmpty()}" th:data-elements="${type}">
+    <div id="elements-rows" class="row gy-1 gx-1">
+        <div class="col" th:each="element : ${elements}">
+            <a th:if="${type == 'films'}">
+                <img class="rounded" th:src="'data:image/jpeg;base64,' + ${element.base64Poster}" th:alt="${element.name}" width="100px" height="auto">
+            </a>
+            <a class="btn btn-dark" th:if="${type != 'films'}" th:text="${element.name}"></a>
             <article th:if="${type == 'films'}" hidden th:data-link="|film/${element.name}-${element.year}|"></article>
             <article th:if="${type == 'directors'}" hidden th:data-link="|director/${element.name}|"></article>
             <article th:if="${type == 'primaryLanguages'}" hidden th:data-link="|film/language/primary/${element.name}|"></article>
