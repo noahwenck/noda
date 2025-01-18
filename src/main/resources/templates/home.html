@@ -19,6 +19,11 @@
         <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#collectionModal">
             Add Data
         </button>
+<!--        todo: vertically align this -->
+        <div class="alert alert-danger" role="alert" th:if="${health_error!=null and health_error}">
+            The Web Scraper is down.
+            You cannot collect data from Letterboxd.
+        </div>
 <!--        <form class="d-flex" id="search-form" role="search" onsubmit="search()"> todo: make form-->
         <div class="d-flex" id="search-form" role="search">
             <select class="form-select" id="option-list" onchange="updateSearchDiv()">
@@ -34,6 +39,7 @@
 <div class="modal fade" id="collectionModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
+            <!--        todo: remove the ability to call web scraper if down -->
             <div class="modal-header">
                 <h1 class="modal-title fs-5">Input Letterboxd Username for Data</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>

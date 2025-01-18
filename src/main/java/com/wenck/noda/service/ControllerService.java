@@ -8,6 +8,12 @@ import java.util.List;
 @Service
 public class ControllerService<T> {
 
+    private final HealthCheckService healthCheckService;
+
+    public ControllerService(HealthCheckService healthCheckService) {
+        this.healthCheckService = healthCheckService;
+    }
+
     /**
      * Appends utility information to the model for use in organizing the frontend properly
      *
@@ -27,6 +33,11 @@ public class ControllerService<T> {
 
         // Tells frontend how to properly render urls
         model.addAttribute("type", type);
+
+        // Anytime we are on the homepage, check the health of the web scraper, and prompt an alert if it is down
+        if (!healthCheckService.checkHealthWebScraper()) {
+            model.addAttribute("health_error", true);
+        }
     }
 
     /**
