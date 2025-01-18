@@ -3,6 +3,7 @@ package com.wenck.noda.entity;
 import com.wenck.noda.entity.film.Film;
 import jakarta.persistence.*;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity(name = "director")
@@ -14,10 +15,9 @@ public class Director extends BaseEntity {
 
     public Director() {}
 
-    public Director(String name,
-                    Set<Film> films) {
+    public Director(String name) {
         this.name = name;
-        this.films = films;
+        this.films = new HashSet<>();
     }
 
     @Id

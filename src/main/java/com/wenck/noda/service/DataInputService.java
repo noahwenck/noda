@@ -11,7 +11,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
+/**
+ * Service for handling data input operations
+ */
 @Service
 public class DataInputService {
 
@@ -37,23 +42,28 @@ public class DataInputService {
         this.studioRepository = studioRepository;
     }
 
-    public boolean handleJSONParse(String JsonObject) {
+    /**
+     * Parse a JSON object containing films.
+     * Parses each attribute and creating/saving/updating entities as needed.
+     *
+     * @param filmAsJSON JSON films
+     */
+    public void parseFilmsFromJSON(String filmAsJSON) {
 
         ObjectMapper objectMapper = new ObjectMapper();
         int newFilmsCount = 0;
         int existingFilmsCount = 0;
         final long startTime = System.currentTimeMillis();
         try {
-            List<Map<String, Object>> data = objectMapper.readValue(JsonObject, new TypeReference<>() {});
+            List<Map<String, Object>> data = objectMapper.readValue(filmAsJSON, new TypeReference<>() {});
             for (Map<String, Object> map : data) {
                 Film film = new Film();
-                Set<String> directorNames = new HashSet<>();
                 for (String key : map.keySet()) {
                     switch (key) {
                         case "Name" ->
                                 film.setName((String) map.get(key));
                         case "Director" ->
-                                directorNames = new HashSet<>((Collection) map.get(key));
+                                film.setDirector(parseDirector((List<Object>) map.get(key)));
                         case "Year" ->
                                 film.setYear((Integer) map.get(key));
                         case "Primary Language" ->
@@ -75,24 +85,6 @@ public class DataInputService {
                     }
                 }
 
-                Set<Director> directorSet = new HashSet<>();
-                for (String name : directorNames) {
-                    Set<Film> set = new HashSet<>();
-                    set.add(film);
-
-                    Director existingDirector = directorRepository.findByName(name);
-                    if (existingDirector == null) {
-                        Director director = new Director(name, set);
-                        director.setName(name);
-                        directorRepository.save(director);
-                        directorSet.add(director);
-                    } else {
-                        directorSet.add(existingDirector);
-                    }
-                }
-                // Want to keep this connected to director code, but as early as possible
-                film.setDirector(directorSet);
-
                 Film existingFilm = filmRepository.findByNameAndYear(film.getName(), film.getYear());
                 if (existingFilm == null) {
                     newFilmsCount++;
@@ -103,7 +95,6 @@ public class DataInputService {
             }
         } catch (JsonProcessingException ex) {
             LOG.error("Failed to process JSON object", ex);
-            return false;
         }
 
         final long durationMs = System.currentTimeMillis() - startTime;
@@ -115,12 +106,59 @@ public class DataInputService {
         if (existingFilmsCount > 0) {
             LOG.info("Duplicate films found, existingFilmsCount={}", existingFilmsCount);
         }
-
-        return true;
     }
 
-    // todo somehow combine these methods, too much repetition for such basic functionality
+    /**
+     * General method for parsing a list of entities from a JSON array,
+     * creating new entities if they do not exist in the database.
+     *
+     * @param json string list of entity names
+     * @param findByName function from the entities repository to find an entity by name
+     * @param createNewEntity entity constructor
+     * @param saveEntity function from the entities repository to save an entity
+     * @return set of entities to be added to the film
+     */
+    private <T> Set<T> parseEntities(List<Object> json, Function<String, T> findByName, Function<String, T> createNewEntity, Consumer<T> saveEntity) {
+        Set<T> entitySet = new HashSet<>();
+        if (json != null) {
+            for (Object entityName : json) {
+                T existingEntity = findByName.apply((String) entityName);
+                if (existingEntity == null) {
+                    T newEntity = createNewEntity.apply((String) entityName);
+                    saveEntity.accept(newEntity);
+                    entitySet.add(newEntity);
+                } else {
+                    entitySet.add(existingEntity);
+                }
+            }
+        } else {
+            entitySet = new HashSet<>();
+        }
+        return entitySet;
+    }
 
+    private Set<Director> parseDirector(List<Object> json) {
+        return parseEntities(json, directorRepository::findByName, Director::new, directorRepository::save);
+    }
+
+    private Set<Country> parseCountry(List<Object> json) {
+        return parseEntities(json, countryRepository::findByName, Country::new, countryRepository::save);
+    }
+
+    private Set<Studio> parseStudio(List<Object> json) {
+        return parseEntities(json, studioRepository::findByName, Studio::new, studioRepository::save);
+    }
+
+    private Set<Genre> parseGenre(List<Object> json) {
+        return parseEntities(json, genreRepository::findByName, Genre::new, genreRepository::save);
+    }
+
+    /**
+     * Parse a list of languages from a JSON string
+     *
+     * @param json list of language names
+     * @return list of languages
+     */
     private Set<Language> parseSpokenLanguage(List<Object> json) {
         Set<Language> spokenLanguage = new HashSet<>();
         for (Object language : json) {
@@ -129,6 +167,13 @@ public class DataInputService {
         return spokenLanguage;
     }
 
+    /**
+     * Parse a single language from a JSON string
+     *
+     * @param languageName name of the language
+     * @param primaryLanguage if the language is used as a primary language
+     * @return language entity
+     */
     private Language parseSingleLanguage(String languageName, boolean primaryLanguage) {
         Language existingLanguage = languageRepository.findByName(languageName);
         if (existingLanguage == null) {
@@ -140,70 +185,16 @@ public class DataInputService {
         }
     }
 
-    private Set<Country> parseCountry(List<Object> json) {
-        Set<Country> countrySet = new HashSet<>();
-        for (Object country : json) {
-            Country existingCountry = countryRepository.findByName((String) country);
-            if (existingCountry == null) {
-                Country newCountry = new Country((String) country);
-                countryRepository.save(newCountry);
-                countrySet.add(newCountry);
-            } else {
-                countrySet.add(existingCountry);
-            }
-        }
-        return countrySet;
-    }
-
-    private Set<Genre> parseGenre(List<Object> json) {
-        Set<Genre> genreSet = new HashSet<>();
-        if (json != null) { // todo do this for rest
-            for (Object genre : json) {
-                Genre existingGenre = genreRepository.findByName((String) genre);
-                if (existingGenre == null) {
-                    Genre newGenre = new Genre((String) genre);
-                    genreRepository.save(newGenre);
-                    genreSet.add(newGenre);
-                } else {
-                    genreSet.add(existingGenre);
-                }
-            }
-        } else {
-            genreSet = new HashSet<>();
-        }
-
-        return genreSet;
-    }
-
-    private Set<Studio> parseStudio(List<Object> json) {
-        Set<Studio> studioSet = new HashSet<>();
-        for (Object studio : json) {
-            Studio existingStudio = studioRepository.findByName((String) studio);
-            if (existingStudio == null) {
-                Studio newStudio = new Studio((String) studio);
-                studioRepository.save(newStudio);
-                studioSet.add(newStudio);
-            } else {
-                studioSet.add(existingStudio);
-            }
-        }
-        return studioSet;
-    }
-
-    //todo: investigate if this can be done like this
-    private void JsonToFilmObject(ObjectMapper objectMapper, String films) throws JsonProcessingException {
-        List<Film> filmlist = objectMapper.readValue(films, new TypeReference<>(){});
-        for (Film film : filmlist) {
-            System.out.println(film.getName());
-        }
-    }
-
+    /**
+     * Utility method to purge all data from the database.
+     */
     public void purge() {
-
-        // burn it all
-        filmRepository.deleteAll();
+        countryRepository.deleteAll();
         directorRepository.deleteAll();
+        filmRepository.deleteAll();
+        genreRepository.deleteAll();
         languageRepository.deleteAll();
+        studioRepository.deleteAll();
     }
 
 }

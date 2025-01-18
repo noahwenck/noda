@@ -5,9 +5,11 @@ import com.wenck.noda.service.DataInputService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Controller for handling data input operations
+ */
 @Controller
 @RequestMapping("input")
 public class DataInputController {
@@ -22,14 +24,24 @@ public class DataInputController {
         this.dataInputService = dataInputService;
     }
 
-    @PostMapping("/asJSON")
-    public String handleJSONParse(@RequestParam String films) {
+    /**
+     * Access point for web scraper to send films in JSON
+     *
+     * @param films list JSON films
+     */
+    @PostMapping("/films")
+    public String parseFilmsFromJSON(@RequestParam String films) {
 
-        boolean parsed = dataInputService.handleJSONParse(films);
+        dataInputService.parseFilmsFromJSON(films);
 
         return "redirect:/";
     }
 
+    /**
+     * Mapping for me to easily nuke db (tables will be empty not totally nuked)
+     *
+     * todo: remove before i forget
+     */
     @GetMapping("/purge")
     public String purge() {
 
