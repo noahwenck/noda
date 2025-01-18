@@ -110,7 +110,7 @@ public class FilmController {
         controllerService.appendBasicsToModel(TYPE, model);
 
         Language language = languageRepository.findByName(languageName);
-        List<Film> films = filmRepository.findBySpokenLanguage(language.getName());
+        List<Film> films = filmRepository.findByPrimaryLanguage(language.getName());
         controllerService.appendListElementsToModel(films, model);
 
         return "home";

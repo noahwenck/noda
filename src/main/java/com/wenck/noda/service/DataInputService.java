@@ -181,6 +181,10 @@ public class DataInputService {
             languageRepository.save(newLanguage);
             return newLanguage;
         } else {
+            if (primaryLanguage) {
+                existingLanguage.setPrimaryLanguage(true);
+                languageRepository.save(existingLanguage);
+            }
             return existingLanguage;
         }
     }
