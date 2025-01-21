@@ -12,6 +12,7 @@ public class Film extends BaseEntity {
     private String name;
     private Set<Director> director;
     private int year;
+    private String synopsis;
     private Language primaryLanguage;
     private Set<Language> spokenLanguage;
     private Set<Country> country;
@@ -64,6 +65,15 @@ public class Film extends BaseEntity {
 
     public void setYear(int year) {
         this.year = year;
+    }
+
+    @Column(name = "SYNOPSIS", columnDefinition = "LONGTEXT")
+    public String getSynopsis() {
+        return synopsis;
+    }
+
+    public void setSynopsis(String synopsis) {
+        this.synopsis = synopsis;
     }
 
     @ManyToOne

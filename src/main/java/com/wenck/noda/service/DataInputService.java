@@ -66,6 +66,8 @@ public class DataInputService {
                                 film.setDirector(parseDirector((List<Object>) map.get(key)));
                         case "Year" ->
                                 film.setYear((Integer) map.get(key));
+                        case "Synopsis" ->
+                                film.setSynopsis((String) map.get(key));
                         case "Primary Language" ->
                                 film.setPrimaryLanguage(parseSingleLanguage((String) map.get(key), true));
                         case "Spoken Language" ->
