@@ -27,7 +27,7 @@ with data collected from my [letterboxdWebScraper](https://github.com/noahwenck/
 
 ## Running
 
-1. From the Start up your MariaDB pod by running the following command from the project's directory:
+1. With Docker Desktop running, start up your MariaDB pod by running the following command from the project's directory:
    ```
    docker compose up
    ```
