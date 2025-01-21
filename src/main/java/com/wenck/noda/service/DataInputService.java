@@ -1,5 +1,6 @@
 package com.wenck.noda.service;
 
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.wenck.noda.entity.*;
 import com.wenck.noda.entity.film.*;
 import com.wenck.noda.repository.*;
@@ -47,8 +48,9 @@ public class DataInputService {
      * Parses each attribute and creating/saving/updating entities as needed.
      *
      * @param filmAsJSON JSON films
+     * @return true if successful
      */
-    public void parseFilmsFromJSON(String filmAsJSON) {
+    public boolean parseFilmsFromJSON(String filmAsJSON) {
 
         ObjectMapper objectMapper = new ObjectMapper();
         int newFilmsCount = 0;
@@ -97,6 +99,7 @@ public class DataInputService {
             }
         } catch (JsonProcessingException ex) {
             LOG.error("Failed to process JSON object", ex);
+            return false;
         }
 
         final long durationMs = System.currentTimeMillis() - startTime;
@@ -108,6 +111,8 @@ public class DataInputService {
         if (existingFilmsCount > 0) {
             LOG.info("Duplicate films found, existingFilmsCount={}", existingFilmsCount);
         }
+
+        return true;
     }
 
     /**

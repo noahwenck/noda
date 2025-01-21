@@ -2,7 +2,9 @@ package com.wenck.noda.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
@@ -36,15 +38,18 @@ public class HealthCheckService {
         try {
             LOG.info("Attempting to ping web scraper. URI={}", webScraperUriComponents.toUriString());
 
-            restTemplate.getForEntity(webScraperUriComponents.toUriString(), String.class);
+            final ResponseEntity<String> response =
+                    restTemplate.getForEntity(webScraperUriComponents.toUriString(), String.class);
 
-            LOG.info("Successfully pinged web scraper.");
-            return true;
+            if (response.getStatusCode().is2xxSuccessful()) {
+                LOG.info("Successfully pinged web scraper.");
+                return true;
+            }
         } catch (RestClientException e) {
-            // Catches 400 + 500 errors along with other failures
-            LOG.error("Failure to ping web scraper.");
+            LOG.error("Exception while pinging web scraper", e);
         }
 
+        LOG.error("Failure to ping web scraper.");
         return false;
     }
 }
