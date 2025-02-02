@@ -1,6 +1,5 @@
 package com.wenck.noda.service;
 
-import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.wenck.noda.entity.*;
 import com.wenck.noda.entity.film.*;
 import com.wenck.noda.repository.*;
@@ -24,6 +23,7 @@ public class DataInputService {
     private static final Logger LOG = LoggerFactory.getLogger(DataInputService.class);
     private final CountryRepository countryRepository;
     private final DirectorRepository directorRepository;
+    private final FilmListRepository filmListRepository;
     private final FilmRepository filmRepository;
     private final GenreRepository genreRepository;
     private final LanguageRepository languageRepository;
@@ -31,12 +31,14 @@ public class DataInputService {
 
     public DataInputService(CountryRepository countryRepository,
                             DirectorRepository directorRepository,
+                            FilmListRepository filmListRepository,
                             FilmRepository filmRepository,
                             GenreRepository genreRepository,
                             LanguageRepository languageRepository,
                             StudioRepository studioRepository) {
         this.countryRepository = countryRepository;
         this.directorRepository = directorRepository;
+        this.filmListRepository = filmListRepository;
         this.filmRepository = filmRepository;
         this.genreRepository = genreRepository;
         this.languageRepository = languageRepository;
@@ -44,57 +46,39 @@ public class DataInputService {
     }
 
     /**
-     * Parse a JSON object containing films.
+     * Parse a JSON object containing films, may be a list.
      * Parses each attribute and creating/saving/updating entities as needed.
      *
-     * @param filmAsJSON JSON films
+     * @param json String representation of json object containing list of films or a list
+     * @param list whether the object being parsed is a lsit ro not
      * @return true if successful
      */
-    public boolean parseFilmsFromJSON(String filmAsJSON) {
-
-        ObjectMapper objectMapper = new ObjectMapper();
+    public boolean parseFromJSON(String json, boolean list) {
+        final ObjectMapper objectMapper = new ObjectMapper();
         int newFilmsCount = 0;
         int existingFilmsCount = 0;
         final long startTime = System.currentTimeMillis();
-        try {
-            List<Map<String, Object>> data = objectMapper.readValue(filmAsJSON, new TypeReference<>() {});
-            for (Map<String, Object> map : data) {
-                Film film = new Film();
-                for (String key : map.keySet()) {
-                    switch (key) {
-                        case "Name" ->
-                                film.setName((String) map.get(key));
-                        case "Director" ->
-                                film.setDirector(parseDirector((List<Object>) map.get(key)));
-                        case "Year" ->
-                                film.setYear((Integer) map.get(key));
-                        case "Synopsis" ->
-                                film.setSynopsis((String) map.get(key));
-                        case "Primary Language" ->
-                                film.setPrimaryLanguage(parseSingleLanguage((String) map.get(key), true));
-                        case "Spoken Language" ->
-                                film.setSpokenLanguage(parseSpokenLanguage((List<Object>) map.get(key)));
-                        case "Country" ->
-                                film.setCountry(parseCountry((List<Object>) map.get(key)));
-                        case "Runtime" ->
-                                film.setRuntime((Integer) map.get(key));
-                        case "Average Rating" ->
-                                film.setAverageRating((Double) map.get(key));
-                        case "Genre" ->
-                                film.setGenre(parseGenre((List<Object>) map.get(key)));
-                        case "Studio" ->
-                                film.setStudio(parseStudio((List<Object>) map.get(key)));
-                        case "Base64 Poster" ->
-                                film.setBase64Poster((String) map.get(key));
-                    }
-                }
+        FilmList listFoundIn = null;
 
-                Film existingFilm = filmRepository.findByNameAndYear(film.getName(), film.getYear());
-                if (existingFilm == null) {
-                    newFilmsCount++;
-                    filmRepository.save(film);
-                } else {
+        try {
+            final List<Map<String, Object>> data = objectMapper.readValue(json, new TypeReference<>() {});
+
+            if (list) {
+                final Map<String, Object> jsonifiedName = data.remove(0);
+                // For file creation we set spaces to dashes, revert for a more readable list title
+                final String listName = ((String) jsonifiedName.get("List Name")).replace('-', ' ');
+                listFoundIn = new FilmList(listName);
+                // todo: Duplicate list names are fine, but ok with importing a list that may already exist?
+                filmListRepository.save(listFoundIn);
+                LOG.info("List successfully saved, listName={}", listName);
+            }
+
+            for (Map<String, Object> jsonifiedFilm : data) {
+                final ParsedFilmResult parsedFilmResult = parseFilmFromJSON(jsonifiedFilm, listFoundIn);
+                if (parsedFilmResult.existing()) {
                     existingFilmsCount++;
+                } else {
+                    newFilmsCount++;
                 }
             }
         } catch (JsonProcessingException ex) {
@@ -113,6 +97,60 @@ public class DataInputService {
         }
 
         return true;
+    }
+
+    private ParsedFilmResult parseFilmFromJSON(Map<String, Object> jsonifiedFilm,
+                                   FilmList listFoundIn) {
+        Film newFilm = new Film();
+        for (String key : jsonifiedFilm.keySet()) {
+            switch (key) {
+                case "Name" ->
+                        newFilm.setName((String) jsonifiedFilm.get(key));
+                case "Director" ->
+                        newFilm.setDirector(parseDirector((List<Object>) jsonifiedFilm.get(key)));
+                case "Year" ->
+                        newFilm.setYear((Integer) jsonifiedFilm.get(key));
+                case "Synopsis" ->
+                        newFilm.setSynopsis((String) jsonifiedFilm.get(key));
+                case "Primary Language" ->
+                        newFilm.setPrimaryLanguage(parseSingleLanguage((String) jsonifiedFilm.get(key), true));
+                case "Spoken Language" ->
+                        newFilm.setSpokenLanguage(parseSpokenLanguage((List<Object>) jsonifiedFilm.get(key)));
+                case "Country" ->
+                        newFilm.setCountry(parseCountry((List<Object>) jsonifiedFilm.get(key)));
+                case "Runtime" ->
+                        newFilm.setRuntime((Integer) jsonifiedFilm.get(key));
+                case "Average Rating" ->
+                        newFilm.setAverageRating((Double) jsonifiedFilm.get(key));
+                case "Genre" ->
+                        newFilm.setGenre(parseGenre((List<Object>) jsonifiedFilm.get(key)));
+                case "Studio" ->
+                        newFilm.setStudio(parseStudio((List<Object>) jsonifiedFilm.get(key)));
+                case "Base64 Poster" ->
+                        newFilm.setBase64Poster((String) jsonifiedFilm.get(key));
+            }
+        }
+
+        // todo: do this earlier (parse name and year first, check if existing, parse after?) - assuming we don't need to update anything besides list.
+        final Film existingFilm = filmRepository.findByNameAndYear(newFilm.getName(), newFilm.getYear());
+
+        if (existingFilm == null) {
+            if (listFoundIn != null) {
+                newFilm.setListsFoundIn(new HashSet<>(Set.of(listFoundIn)));
+            } else {
+                // Since this is a field that can be added onto, make sure there is a hashset set up
+                newFilm.setListsFoundIn(new HashSet<>());
+            }
+            filmRepository.save(newFilm);
+            return new ParsedFilmResult(false, newFilm);
+        } else {
+            if (listFoundIn != null &&
+                    existingFilm.getListsFoundIn().stream().noneMatch(list -> list.getName().equals(listFoundIn.getName()))) {
+                existingFilm.getListsFoundIn().add(listFoundIn);
+                filmRepository.save(existingFilm);
+            }
+            return new ParsedFilmResult(true, existingFilm);
+        }
     }
 
     /**
@@ -207,5 +245,7 @@ public class DataInputService {
         languageRepository.deleteAll();
         studioRepository.deleteAll();
     }
+
+    private record ParsedFilmResult(boolean existing, Film film) {}
 
 }

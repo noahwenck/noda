@@ -32,20 +32,15 @@ public class DataInputController {
     @PostMapping("/films")
     public String parseFilmsFromJSON(@RequestParam String films) {
 
-        dataInputService.parseFilmsFromJSON(films);
+        dataInputService.parseFromJSON(films, false);
 
         return "redirect:/";
     }
 
-    /**
-     * Mapping for me to easily nuke db (tables will be empty not totally nuked)
-     *
-     * todo: remove before i forget
-     */
-    @GetMapping("/purge")
-    public String purge() {
+    @PostMapping("/list")
+    public String parseListFromJSON(@RequestParam String list) {
 
-        dataInputService.purge();
+        dataInputService.parseFromJSON(list, true);
 
         return "redirect:/";
     }

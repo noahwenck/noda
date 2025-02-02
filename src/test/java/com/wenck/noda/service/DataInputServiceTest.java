@@ -2,6 +2,7 @@ package com.wenck.noda.service;
 
 import com.wenck.noda.TestData;
 import com.wenck.noda.entity.Director;
+import com.wenck.noda.entity.FilmList;
 import com.wenck.noda.entity.film.*;
 import com.wenck.noda.repository.*;
 import org.junit.jupiter.api.Test;
@@ -32,6 +33,8 @@ class DataInputServiceTest {
     @Mock
     private DirectorRepository directorRepository;
     @Mock
+    private FilmListRepository filmListRepository;
+    @Mock
     private FilmRepository filmRepository;
     @Mock
     private GenreRepository genreRepository;
@@ -40,8 +43,10 @@ class DataInputServiceTest {
     @Mock
     private StudioRepository studioRepository;
 
+    // todo mock objectMapper call, even just to return the same TestData string
+
     @Test
-    void testParseFilmsFromJSONSuccessful() {
+    void testParseFromJSONFilmsSuccessful() {
         when(filmRepository.save(any(Film.class))).thenReturn(null);
         when(directorRepository.save(any(Director.class))).thenReturn(null);
         when(languageRepository.save(any(Language.class))).thenReturn(null);
@@ -49,12 +54,12 @@ class DataInputServiceTest {
         when(genreRepository.save(any(Genre.class))).thenReturn(null);
         when(studioRepository.save(any(Studio.class))).thenReturn(null);
 
-        final boolean parsed = dataInputService.parseFilmsFromJSON(TestData.SUCCESSFUL_DATA_3);
+        final boolean parsed = dataInputService.parseFromJSON(TestData.SUCCESSFUL_FILMS_3, false);
         assertTrue(parsed);
     }
 
     @Test
-    void testParseFilmsFromJSONDuplicateFilmSuccessful() {
+    void testParseFromJSONFilmsDuplicateFilmSuccessful() {
         when(filmRepository.save(any(Film.class))).thenReturn(null);
         when(directorRepository.save(any(Director.class))).thenReturn(null);
         when(languageRepository.save(any(Language.class))).thenReturn(null);
@@ -62,14 +67,28 @@ class DataInputServiceTest {
         when(genreRepository.save(any(Genre.class))).thenReturn(null);
         when(studioRepository.save(any(Studio.class))).thenReturn(null);
 
-        final boolean parsed = dataInputService.parseFilmsFromJSON(TestData.SUCCESSFUL_DATA_2_DUPLICATE);
+        final boolean parsed = dataInputService.parseFromJSON(TestData.SUCCESSFUL_FILMS_2_DUPLICATE, false);
         assertTrue(parsed);
     }
 
     @Test
-    void testParseFilmsFromJSONNotJSONFailure() {
-        final boolean parsed = dataInputService.parseFilmsFromJSON(TestData.FAILURE_DATA_1_NOT_JSON);
+    void testParseFromJSONFilmsNotJSONFailure() {
+        final boolean parsed = dataInputService.parseFromJSON(TestData.FAILURE_FILMS_1_NOT_JSON, false);
         assertFalse(parsed);
+    }
+
+    @Test
+    void testParseFromJSONListSuccessful() {
+        when(filmListRepository.save(any(FilmList.class))).thenReturn(null);
+        when(filmRepository.save(any(Film.class))).thenReturn(null);
+        when(directorRepository.save(any(Director.class))).thenReturn(null);
+        when(languageRepository.save(any(Language.class))).thenReturn(null);
+        when(countryRepository.save(any(Country.class))).thenReturn(null);
+        when(genreRepository.save(any(Genre.class))).thenReturn(null);
+        when(studioRepository.save(any(Studio.class))).thenReturn(null);
+
+        final boolean parsed = dataInputService.parseFromJSON(TestData.SUCCESSFUL_LIST, true);
+        assertTrue(parsed);
     }
 
     /**

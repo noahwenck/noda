@@ -21,6 +21,7 @@ public class Film extends BaseEntity {
     private Set<Genre> genre;
     private Set<Studio> studio;
     private String base64Poster;
+    private Set<FilmList> listsFoundIn;
     public Film() {
         // Hi there!
     }
@@ -149,7 +150,7 @@ public class Film extends BaseEntity {
     @JoinTable(
             name = "film_studio",
             joinColumns = @JoinColumn(name = "FILM_ID"),
-            inverseJoinColumns = @JoinColumn(name = "GENRE")
+            inverseJoinColumns = @JoinColumn(name = "STUDIO")
     )
     public Set<Studio> getStudio() {
         return studio;
@@ -166,5 +167,19 @@ public class Film extends BaseEntity {
 
     public void setBase64Poster(String base64Poster) {
         this.base64Poster = base64Poster;
+    }
+
+    @ManyToMany
+    @JoinTable(
+            name = "film_list",
+            joinColumns = @JoinColumn(name = "FILM_ID"),
+            inverseJoinColumns = @JoinColumn(name = "LIST")
+    )
+    public Set<FilmList> getListsFoundIn() {
+        return listsFoundIn;
+    }
+
+    public void setListsFoundIn(Set<FilmList> listsFoundIn) {
+        this.listsFoundIn = listsFoundIn;
     }
 }
