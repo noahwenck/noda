@@ -17,7 +17,7 @@
 <!--        todo get this somewhere else on navbar - not centered between other divs, feels awkward-->
         <!-- Button trigger modal -->
         <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#collectionModal">
-            Add Data
+            Import Data
         </button>
 <!--        todo: vertically align this -->
         <div class="alert alert-danger" role="alert" th:if="${health_error!=null and health_error}">
@@ -35,8 +35,32 @@
     </div>
 </nav>
 
-<!-- Data Collection Modal -->
 <div class="modal fade" id="collectionModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <!--        todo: remove the ability to call web scraper if down -->
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Import data</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col">
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#userCollectionModal">
+                            Letterboxd User
+                        </button>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#listCollectionModal">
+                            Letterboxd List
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Data Collection Modal -->
+<div class="modal fade" id="userCollectionModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <!--        todo: remove the ability to call web scraper if down -->
@@ -45,7 +69,6 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-<!--                todo: get padding between top and bottom of this div to be even -->
                 <div class="input-group mb-2 mt-1">
                     <div class="form-floating">
                         <input class="form-control" id="username-input" placeholder="letterboxdUsername">
@@ -60,9 +83,30 @@
                     <input type="checkbox" class="btn-check" id="watchlist" autocomplete="off">
                     <label class="btn btn-outline-primary" for="watchlist">Watchlist</label>
 
-                    <button class="btn btn-outline-primary" onclick="requestDataFromFlask()" data-bs-dismiss="modal">
-                    Gather Data
+                    <button class="btn btn-primary" onclick="requestFilmsFromScraper()" data-bs-dismiss="modal">
+                    Import Data
                     </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="listCollectionModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <!--        todo: remove the ability to call web scraper if down -->
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Input Letterboxd List URL for Data</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group mb-2 mt-1">
+                    <div class="form-floating">
+                        <input class="form-control" id="list-input" placeholder="https://letterboxd.com/dave/list/official-top-250-narrative-feature-films/">
+                        <label for="list-input">Letterboxd List URL</label>
+                    </div>
+                    <button class="btn btn-primary" onclick="requestListFromScraper()" data-bs-dismiss="modal">Import Data</button>
                 </div>
             </div>
         </div>

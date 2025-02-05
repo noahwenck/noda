@@ -149,8 +149,11 @@ function addLinksToElements() {
     }
 }
 
-async function requestDataFromFlask() {
-    console.log("Beginning to gather Letterboxd Information");
+/**
+ * Parses the Letterboxd username and which types of films we wish to collect, and passes that information along to scraper
+ */
+async function requestFilmsFromScraper() {
+    console.log("Beginning to import Letterboxd User information.");
 
     const potentialTypes = ["films", "likes", "watchlist"];
     let types = [];
@@ -168,9 +171,40 @@ async function requestDataFromFlask() {
         const response = await fetch(flaskUrl + user + "/" + type);
 
         if (response.ok) {
-            console.log("Response from Web Scraper: " + response.status + ", for user: " + user + ", of type: " + type);
+            console.log("Response from Web Scraper: " + response.status +
+                ", for user: " + user + ", of type: " + type);
         } else {
-            console.error("Response from Web Scraper: " + response.status + ", for user: " + user + ", of type: " + type);
+            console.error("Response from Web Scraper: " + response.status +
+                ", for user: " + user + ", of type: " + type);
         }
+    }
+}
+
+/**
+ * Parses the Letterboxd username and list we wish to collect, and passes that information along to scraper
+ */
+async function requestListFromScraper() {
+    console.log("Beginning to import Letterboxd List information.");
+
+    const hostVerificationLiteral = "https://letterboxd.com/";
+
+    let listUrl = document.getElementById("list-input").value;
+    if (!listUrl.startsWith(hostVerificationLiteral)) {
+        console.error("Not a valid Letterboxd List URL. url:" + listUrl);
+        return;
+    }
+    let username = listUrl.replace(hostVerificationLiteral, "");
+    username = username.substring(0, username.indexOf("/"));
+    const listPath = listUrl.replace(hostVerificationLiteral + username + "/list/", "").replace("/", "");
+
+    console.log("Importing list: " + listPath + ", from user: " + username);
+    const response = await fetch(flaskUrl + "list/" + username + "/" + listPath);
+
+    if (response.ok) {
+        console.log("Response from Web Scraper: " + response.status +
+            ", for list: " + listPath + ", of user: " + username);
+    } else {
+        console.error("Response from Web Scraper: " + response.status +
+            ", for list: " + listPath + ", of user: " + username);
     }
 }
