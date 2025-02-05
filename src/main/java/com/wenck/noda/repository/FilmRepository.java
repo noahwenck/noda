@@ -36,4 +36,7 @@ public interface FilmRepository extends JpaRepository<Film, Integer> {
 
     @Query("SELECT f FROM film f JOIN f.country c WHERE c.name = :countryName")
     List<Film> findByCountry(String countryName);
+
+    @Query("SELECT f FROM film f JOIN f.listsFoundIn l WHERE l.name = :listName")
+    List<Film> findByListsFoundIn(String listName);
 }

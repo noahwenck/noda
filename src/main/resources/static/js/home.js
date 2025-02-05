@@ -44,6 +44,7 @@ function search() {
         case "genre":
         case "studio":
         case "country":
+        case "list":
             window.location.href = baseUrl + "film/" + option;
             break;
         case "year":
@@ -53,7 +54,7 @@ function search() {
             break;
         case "film":
             if (searchParamExists) {
-                window.location.href = baseUrl + "film/list/" + searchParam;
+                window.location.href = baseUrl + "film/" + searchParam;
             } else {
                 window.location.href = baseUrl;
             }

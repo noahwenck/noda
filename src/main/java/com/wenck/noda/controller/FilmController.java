@@ -1,5 +1,6 @@
 package com.wenck.noda.controller;
 
+import com.wenck.noda.entity.FilmList;
 import com.wenck.noda.entity.film.*;
 import com.wenck.noda.repository.*;
 import com.wenck.noda.service.ControllerService;
@@ -13,6 +14,8 @@ import java.util.*;
 
 @Controller
 @RequestMapping("/film")
+// todo: refactor, either break everything out to their own controller, or consolidate director and call it something
+//      like DataDisplayController, DataRetrievalController
 public class FilmController {
 
     private static final Logger LOG = LoggerFactory.getLogger(FilmController.class);
@@ -20,6 +23,7 @@ public class FilmController {
     private final ControllerService controllerService;
     private final CountryRepository countryRepository;
     private final DirectorRepository directorRepository;
+    private final FilmListRepository filmListRepository;
     private final FilmRepository filmRepository;
     private final GenreRepository genreRepository;
     private final LanguageRepository languageRepository;
@@ -28,6 +32,7 @@ public class FilmController {
     public FilmController(ControllerService controllerService,
                           CountryRepository countryRepository,
                           DirectorRepository directorRepository,
+                          FilmListRepository filmListRepository,
                           FilmRepository filmRepository,
                           GenreRepository genreRepository,
                           LanguageRepository languageRepository,
@@ -35,6 +40,7 @@ public class FilmController {
         this.controllerService = controllerService;
         this.countryRepository = countryRepository;
         this.directorRepository = directorRepository;
+        this.filmListRepository = filmListRepository;
         this.filmRepository = filmRepository;
         this.genreRepository = genreRepository;
         this.languageRepository = languageRepository;
@@ -52,11 +58,11 @@ public class FilmController {
         return "home";
     }
 
-    @GetMapping("/list/{name}")
-    public String getFilmByName(@PathVariable String name,
+    @GetMapping("/{filmName}")
+    public String getFilmByName(@PathVariable String filmName,
                                 Model model) {
 
-        List<Film> films = filmRepository.findByName(name);
+        List<Film> films = filmRepository.findByName(filmName);
         if (films.size() == 1) {
             // todo: do we want sort/search on film page? if so add basics here
             model.addAttribute("film", films.get(0));
@@ -68,7 +74,7 @@ public class FilmController {
         }
     }
 
-    @GetMapping("/{name}-{year}")
+    @GetMapping("/{name}/{year}")
     public String getFilm(@PathVariable String name,
                           @PathVariable String year,
                           Model model) {
@@ -209,6 +215,30 @@ public class FilmController {
         List<Film> films = filmRepository.findByCountry(country.getName());
         controllerService.appendListElementsToModel(films, model);
 
+        return "home";
+    }
+
+    @GetMapping("list")
+    public String getFilmListList(Model model) {
+        controllerService.appendBasicsToModel("list", model);
+        final List<FilmList> filmLists = filmListRepository.findAll();
+        controllerService.appendListElementsToModel(filmLists, model);
+        return "home";
+    }
+
+    @GetMapping("list/{listName}")
+    public String getFilmsByFilmList(@PathVariable String listName,
+                                     Model model) {
+        controllerService.appendBasicsToModel(TYPE, model);
+        model.addAttribute("isList", true);
+        model.addAttribute("listName", listName);
+        final List<FilmList> list = filmListRepository.findByName(listName);
+        if (list.size() == 1) {
+            final List<Film> films = filmRepository.findByListsFoundIn(listName);
+            controllerService.appendListElementsToModel(films, model);
+        } else {
+            // todo: duplicate list names SHOULD be ok, but realistically how can I deal with this?
+        }
         return "home";
     }
 

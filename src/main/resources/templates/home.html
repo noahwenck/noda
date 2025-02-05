@@ -15,14 +15,16 @@
     <div class="container-fluid">
         <a class="navbar-brand" href="http://localhost:8080/">Noda</a>
 <!--        todo get this somewhere else on navbar - not centered between other divs, feels awkward-->
-        <!-- Button trigger modal -->
-        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#collectionModal">
+        <!-- Button to trigger modal to import data -->
+        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#collectionModal"
+                th:if="${(isList==null or !isList) and (healthError==null or !healthError)}">
             Import Data
         </button>
 <!--        todo: vertically align this -->
-        <div class="alert alert-danger" role="alert" th:if="${health_error!=null and health_error}">
+        <!-- Alert if webscraper is down -->
+        <div class="alert alert-danger" role="alert" th:if="${healthError!=null and healthError}">
             The Web Scraper is down.
-            You cannot collect data from Letterboxd.
+            You cannot import data from Letterboxd.
         </div>
 <!--        <form class="d-flex" id="search-form" role="search" onsubmit="search()"> todo: make form-->
         <div class="d-flex" id="search-form" role="search">
@@ -95,7 +97,6 @@
 <div class="modal fade" id="listCollectionModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
-            <!--        todo: remove the ability to call web scraper if down -->
             <div class="modal-header">
                 <h1 class="modal-title fs-5">Input Letterboxd List URL for Data</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -124,19 +125,24 @@
 </div>
 
 <div class="container-fluid text-center bg-secondary" th:if="${error==null and elements!=null and !elements.isEmpty()}" th:data-elements="${type}">
+    <div id="list-title" class="title text-white" th:if="${isList!=null and isList}">
+        <h1 th:text="${listName}"></h1>
+    </div>
     <div id="elements-rows" class="row gy-1 gx-1">
         <div class="col" th:each="element : ${elements}">
             <a th:if="${type == 'films'}">
                 <img class="rounded" th:src="'data:image/jpeg;base64,' + ${element.base64Poster}" th:alt="${element.name}" width="100px" height="auto">
             </a>
             <a class="btn btn-dark" th:if="${type != 'films'}" th:text="${element.name}"></a>
-            <article th:if="${type == 'films'}" hidden th:data-link="|film/${element.name}-${element.year}|"></article>
+<!--            todo: there must be a better way to properly get these links accessable, check thymeleaf documentation -->
+            <article th:if="${type == 'films'}" hidden th:data-link="|film/${element.name}/${element.year}|"></article>
             <article th:if="${type == 'directors'}" hidden th:data-link="|director/${element.name}|"></article>
             <article th:if="${type == 'primaryLanguages'}" hidden th:data-link="|film/language/primary/${element.name}|"></article>
             <article th:if="${type == 'spokenLanguages'}" hidden th:data-link="|film/language/spoken/${element.name}|"></article>
             <article th:if="${type == 'genre'}" hidden th:data-link="|film/genre/${element.name}|"></article>
             <article th:if="${type == 'country'}" hidden th:data-link="|film/country/${element.name}|"></article>
             <article th:if="${type == 'studio'}" hidden th:data-link="|film/studio/${element.name}|"></article>
+            <article th:if="${type == 'list'}" hidden th:data-link="|film/list/${element.name}|"></article>
         </div>
     </div>
 </div>

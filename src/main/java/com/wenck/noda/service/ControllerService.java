@@ -29,14 +29,15 @@ public class ControllerService<T> {
                         "Studio",
                         "Genre",
                         "Country",
-                        "Film")); // Added in no particular order, I just don't care to reorder
+                        "Film",
+                        "List")); // Added in no particular order, I just don't care to reorder
 
         // Tells frontend how to properly render urls
         model.addAttribute("type", type);
 
         // Anytime we are on the homepage, check the health of the web scraper, and prompt an alert if it is down
         if (!healthCheckService.checkHealthWebScraper()) {
-            model.addAttribute("health_error", true);
+            model.addAttribute("healthError", true);
         }
     }
 
