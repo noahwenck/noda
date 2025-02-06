@@ -1,8 +1,7 @@
-const options = ["Alphabetical", "Date Added (Test)", "Date Modified (Test)"]; //todo rename
+const sortOptions = ["Alphabetical", "Date Added (Test)", "Date Modified (Test)"];
 const baseUrl = "http://localhost:8080/";
-const flaskUrl = "http://localhost:5000/"
-
-// TODO: with Bootstrap - a lot of this may have to be rewritten
+const flaskUrl = "http://localhost:5000/";
+const filmUrl = "http://localhost:8080/film/";
 
 document.addEventListener("DOMContentLoaded", function() {
    addLinksToElements();
@@ -12,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function() {
  * Very Beautifully and well done search functionality
  */
 function search() {
-    const option = document.getElementById('option-list').value.toLowerCase();
+    const searchOption = document.getElementById('option-list').value.toLowerCase();
 
     /*
         The Search Input needs to:
@@ -20,44 +19,40 @@ function search() {
             2. Have something actually entered into it.
         to actually use it for navigation.
      */
-    let searchParamExists = false;
     let searchParam = null;
     if (document.getElementById('search-param') != null &&
             document.getElementById('search-param').value != null &&
             document.getElementById('search-param').value !== "") {
         searchParam = document.getElementById('search-param').value;
-        searchParamExists = true;
+
+        if (searchOption === "film") {
+            window.location.href = filmUrl + searchParam;
+        } else if (searchOption === "year") {
+            window.location.href = filmUrl + searchOption + "/" + searchParam;
+        } else {
+            console.error("Search Param exists for a searchOption that it should not, searchOption=" + searchOption);
+        }
+        return;
     }
 
-    switch (option) {
+    switch (searchOption) {
         case null:
-            return; // todo redo bro what is this
+            break;
         case "director":
-            window.location.href = baseUrl + option;
-            break;
-        case "primary language":
-            window.location.href = baseUrl + "film/language/primary";
-            break;
-        case "spoken language":
-            window.location.href = baseUrl + "film/language/spoken";
-            break;
         case "genre":
         case "studio":
         case "country":
         case "list":
-            window.location.href = baseUrl + "film/" + option;
+            window.location.href = filmUrl + searchOption;
             break;
-        case "year":
-            if (searchParamExists) {
-                window.location.href = baseUrl + "film/" + option + "/" + searchParam;
-            }
+        case "primary language":
+            window.location.href = filmUrl + "language/primary";
             break;
-        case "film":
-            if (searchParamExists) {
-                window.location.href = baseUrl + "film/" + searchParam;
-            } else {
-                window.location.href = baseUrl;
-            }
+        case "spoken language":
+            window.location.href = filmUrl + "language/spoken";
+            break;
+        default: // includes "film" case
+            window.location.href = baseUrl;
             break;
     }
 }
@@ -97,7 +92,7 @@ function updateSearchDiv() {
             }
     }
 }
-//
+//  todo: readd sort functionality
 // /**
 //     Add Options to select method to sort elements of page by.
 //  */
@@ -117,7 +112,7 @@ function updateSearchDiv() {
 //
 // /**
 //  * Only alphabetically for now - need to add stuff on backend to actually sort by
-//  * // todo broken by bootstrap
+//  *
 //  */
 // function sort() {
 //     let ul = document.getElementById("elements-list")
