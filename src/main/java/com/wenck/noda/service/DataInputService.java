@@ -99,7 +99,7 @@ public class DataInputService {
         return true;
     }
 
-    private ParsedFilmResult parseFilmFromJSON(Map<String, Object> jsonifiedFilm,
+    private <T> ParsedFilmResult parseFilmFromJSON(Map<String, Object> jsonifiedFilm,
                                    FilmList listFoundIn) {
         Film newFilm = new Film();
         for (String key : jsonifiedFilm.keySet()) {
@@ -120,8 +120,14 @@ public class DataInputService {
                         newFilm.setCountry(parseCountry((List<Object>) jsonifiedFilm.get(key)));
                 case "Runtime" ->
                         newFilm.setRuntime((Integer) jsonifiedFilm.get(key));
-                case "Average Rating" ->
-                        newFilm.setAverageRating((Double) jsonifiedFilm.get(key));
+                case "Average Rating" -> {
+                    final T avgRating = (T) jsonifiedFilm.get(key);
+                    if (avgRating instanceof Integer) {
+                        newFilm.setAverageRating(((Integer) avgRating).doubleValue());
+                    } else {
+                        newFilm.setAverageRating((Double) avgRating);
+                    }
+                }
                 case "Genre" ->
                         newFilm.setGenre(parseGenre((List<Object>) jsonifiedFilm.get(key)));
                 case "Studio" ->

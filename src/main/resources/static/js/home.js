@@ -162,17 +162,10 @@ async function requestFilmsFromScraper() {
     const user = document.getElementById("username-input").value;
 
     for (const type of types) {
-        console.log("Fetching info for user: " + user + ", of type: " + type);
+        console.log("Importing data for user: " + user + ", of type: " + type);
 
-        const response = await fetch(flaskUrl + user + "/" + type);
-
-        if (response.ok) {
-            console.log("Response from Web Scraper: " + response.status +
-                ", for user: " + user + ", of type: " + type);
-        } else {
-            console.error("Response from Web Scraper: " + response.status +
-                ", for user: " + user + ", of type: " + type);
-        }
+        const urlExtension = user + "/" + type;
+        await handleDataTransfer(urlExtension, "films");
     }
 }
 
@@ -194,13 +187,31 @@ async function requestListFromScraper() {
     const listPath = listUrl.replace(hostVerificationLiteral + username + "/list/", "").replace("/", "");
 
     console.log("Importing list: " + listPath + ", from user: " + username);
-    const response = await fetch(flaskUrl + "list/" + username + "/" + listPath);
 
-    if (response.ok) {
-        console.log("Response from Web Scraper: " + response.status +
-            ", for list: " + listPath + ", of user: " + username);
-    } else {
-        console.error("Response from Web Scraper: " + response.status +
-            ", for list: " + listPath + ", of user: " + username);
-    }
+    const urlExtension = "list/" + username + "/" + listPath;
+    await handleDataTransfer(urlExtension, "list");
+}
+
+async function handleDataTransfer(urlExtension, typeOfData) {
+    await fetch(flaskUrl + urlExtension)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Response from shinoda was not ok ' + response.statusText);
+            } else {
+                console.log("Successfully imported data from shinoda.")
+            }
+            return response.json();
+        }).then(data => {
+            fetch(baseUrl + "input/" + typeOfData,
+                {method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data)})
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Response form noda was not ok ' + response.statusText);
+                    } else {
+                        console.log("Successfully exported data to noda.")
+                    }
+                });
+        });
 }

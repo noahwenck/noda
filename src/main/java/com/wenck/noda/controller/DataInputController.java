@@ -30,7 +30,7 @@ public class DataInputController {
      * @param films list JSON films
      */
     @PostMapping("/films")
-    public String parseFilmsFromJSON(@RequestParam String films) {
+    public String parseFilmsFromJSON(@RequestBody String films) {
 
         dataInputService.parseFromJSON(films, false);
 
@@ -38,7 +38,7 @@ public class DataInputController {
     }
 
     @PostMapping("/list")
-    public String parseListFromJSON(@RequestParam String list) {
+    public String parseListFromJSON(@RequestBody String list) {
 
         dataInputService.parseFromJSON(list, true);
 
