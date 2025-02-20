@@ -16,7 +16,7 @@
         <a class="navbar-brand" href="http://localhost:8080/">Noda</a>
 <!--        todo get this somewhere else on navbar - not centered between other divs, feels awkward-->
         <!-- Button to trigger modal to import data -->
-        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#collectionModal"
+        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#importModal"
                 th:if="${(isList==null or !isList) and (healthError==null or !healthError)}">
             Import Data
         </button>
@@ -37,20 +37,22 @@
     </div>
 </nav>
 
-<div class="modal fade" id="collectionModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="importModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5">Import data</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="container modal-body text-center">
                 <div class="row">
-                    <div class="col">
-                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#userCollectionModal">
+                    <div class="col d-grid">
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#userImportModal">
                             Letterboxd User
                         </button>
-                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#listCollectionModal">
+                    </div>
+                    <div class="col d-grid">
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#listImportModal">
                             Letterboxd List
                         </button>
                     </div>
@@ -61,7 +63,7 @@
 </div>
 
 <!-- Data Collection Modal -->
-<div class="modal fade" id="userCollectionModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="userImportModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -92,7 +94,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="listCollectionModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="listImportModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
