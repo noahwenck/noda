@@ -43,7 +43,7 @@
                         <div class="col-8 align-self-center">
                             <div class="row row-cols-2 gy-1 justify-content-center">
                                 <div class="col-6" th:each="dir : ${film.director}">
-                                    <a class="btn btn-dark" th:text="${dir.name}" th:href="@{/director/{directorName}(directorName=${dir.name})}"/>
+                                    <a class="btn btn-dark" th:text="${dir.name}" th:href="@{/film/director/{directorName}(directorName=${dir.name})}"/>
                                 </div>
                             </div>
                         </div>

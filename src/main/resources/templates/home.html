@@ -136,7 +136,7 @@
             <a class="btn btn-dark" th:if="${type != 'films'}" th:text="${element.name}"></a>
 <!--            todo: there must be a better way to properly get these links accessable, check thymeleaf documentation -->
             <article th:if="${type == 'films'}" hidden th:data-link="|film/${element.name}/${element.year}|"></article>
-            <article th:if="${type == 'directors'}" hidden th:data-link="|director/${element.name}|"></article>
+            <article th:if="${type == 'directors'}" hidden th:data-link="|film/director/${element.name}|"></article>
             <article th:if="${type == 'primaryLanguages'}" hidden th:data-link="|film/language/primary/${element.name}|"></article>
             <article th:if="${type == 'spokenLanguages'}" hidden th:data-link="|film/language/spoken/${element.name}|"></article>
             <article th:if="${type == 'genre'}" hidden th:data-link="|film/genre/${element.name}|"></article>

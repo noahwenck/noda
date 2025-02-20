@@ -100,7 +100,7 @@ public class FilmDisplayController {
         return retrieveSearchOptionList("directors", directorRepository::findAll, model);
     }
 
-    @GetMapping("/{directorName}")
+    @GetMapping("/director/{directorName}")
     public String getDirector(@PathVariable String directorName,
                               Model model) {
         controllerService.appendBasicsToModel(FILMS_TYPE, model);
