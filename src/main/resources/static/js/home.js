@@ -1,11 +1,22 @@
 const sortOptions = ["Alphabetical", "Date Added (Test)", "Date Modified (Test)"];
-const baseUrl = "http://localhost:8080/";
-const flaskUrl = "http://localhost:5000/";
-const filmUrl = "http://localhost:8080/film/";
+nodaUrl = "NO VALUE SET YET";
+shinodaUrl = "NO VALUE SET YET";
+filmUrl = "NO VALUE SET YET";
 
-document.addEventListener("DOMContentLoaded", function() {
-   addLinksToElements();
-});
+/**
+ * Sets urls needed on frontend from the profile spring is set to use
+ */
+function configureUrls(nodaUrl, shinodaUrl) {
+    this.nodaUrl = nodaUrl + "/";
+    this.filmUrl = nodaUrl + "/film/";
+
+    this.shinodaUrl = shinodaUrl + "/";
+}
+
+function addLinkToBrand() {
+    const brand = document.getElementById("noda-brand");
+    brand.setAttribute("href", nodaUrl);
+}
 
 /**
  * Very Beautifully and well done search functionality
@@ -52,7 +63,7 @@ function search() {
             window.location.href = filmUrl + "language/spoken";
             break;
         default: // includes "film" case
-            window.location.href = baseUrl;
+            window.location.href = nodaUrl;
             break;
     }
 }
@@ -141,7 +152,7 @@ function updateSearchDiv() {
 function addLinksToElements() {
     for (const child of document.getElementById("elements-rows").children) {
         child.children.item(0).children.item(0).setAttribute("href",
-            baseUrl + child.children.item(1).dataset.link);
+            nodaUrl + child.children.item(1).dataset.link);
     }
 }
 
@@ -193,7 +204,7 @@ async function requestListFromScraper() {
 }
 
 async function handleDataTransfer(urlExtension, typeOfData) {
-    await fetch(flaskUrl + urlExtension)
+    await fetch(shinodaUrl + urlExtension)
         .then(response => {
             if (!response.ok) {
                 throw new Error('Response from shinoda was not ok ' + response.statusText);
@@ -202,7 +213,7 @@ async function handleDataTransfer(urlExtension, typeOfData) {
             }
             return response.json();
         }).then(data => {
-            fetch(baseUrl + "input/" + typeOfData,
+            fetch(nodaUrl + "input/" + typeOfData,
                 {method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(data)})

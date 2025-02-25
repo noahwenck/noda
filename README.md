@@ -16,7 +16,7 @@ with data collected from my [letterboxdWebScraper](https://github.com/noahwenck/
    ```sh
    git clone git@github.com:noahwenck/noda.git
    ```
-2. Ensure the following dependencies are installed:
+2. Ensure the following are installed:
    - [Java](https://www.oracle.com/java/technologies/downloads/?er=221886) (should work just as well with Java 20 or newer)
    - [Docker Desktop](https://www.docker.com/)
    - [Gradle](https://gradle.org/)
@@ -26,6 +26,11 @@ with data collected from my [letterboxdWebScraper](https://github.com/noahwenck/
    ```
 4. Download the service key for the noda-service-account Google Cloud IAM account. (Contact me)
 5. Create a `GOOGLE_APPLICATION_CREDENTIALS` env variable pointing to the service key from step 4. 
+6. In `application.properties` switch the `spring.profiles.active` to `local`, delete or comment out the `prod` profile:
+   ```
+   spring.profiles.active=local
+   # spring.profiles.active=prod
+   ```
 
 ## Running
 
