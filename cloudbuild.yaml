@@ -21,3 +21,11 @@ steps:
       - '--region'
       - 'us-central1'
       - '--allow-unauthenticated'
+
+images:
+  - 'gcr.io/$PROJECT_ID/noda:$COMMIT_SHA'
+
+timeout: '1200s'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
