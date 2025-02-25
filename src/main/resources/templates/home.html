@@ -141,8 +141,8 @@
     </div>
     <div id="elements-rows" class="row gy-1 gx-1">
         <div class="col" th:each="element : ${elements}">
-            <div class="image-container">
-                <a th:if="${type == 'films'}">
+            <div class="image-container" th:if="${type == 'films'}">
+                <a>
                     <img class="rounded image-container" th:src="${element.posterUrl}" th:alt="${element.name}" width="100px" height="auto">
                 </a>
             </div>
