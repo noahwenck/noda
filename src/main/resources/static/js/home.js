@@ -140,7 +140,7 @@ function updateSearchDiv() {
  */
 function addLinksToElements() {
     for (const child of document.getElementById("elements-rows").children) {
-        child.children.item(0).setAttribute("href",
+        child.children.item(0).children.item(0).setAttribute("href",
             baseUrl + child.children.item(1).dataset.link);
     }
 }

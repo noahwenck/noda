@@ -21,10 +21,12 @@ import java.util.function.Function;
 public class DataInputService {
 
     private static final Logger LOG = LoggerFactory.getLogger(DataInputService.class);
+    private static final String IMAGE_BUCKET_URL = "https://storage.cloud.google.com/noda-images/";
     private final CountryRepository countryRepository;
     private final DirectorRepository directorRepository;
     private final FilmListRepository filmListRepository;
     private final FilmRepository filmRepository;
+    private final GoogleCloudStorageService googleCloudStorageService;
     private final GenreRepository genreRepository;
     private final LanguageRepository languageRepository;
     private final StudioRepository studioRepository;
@@ -34,6 +36,7 @@ public class DataInputService {
                             FilmListRepository filmListRepository,
                             FilmRepository filmRepository,
                             GenreRepository genreRepository,
+                            GoogleCloudStorageService googleCloudStorageService,
                             LanguageRepository languageRepository,
                             StudioRepository studioRepository) {
         this.countryRepository = countryRepository;
@@ -41,6 +44,7 @@ public class DataInputService {
         this.filmListRepository = filmListRepository;
         this.filmRepository = filmRepository;
         this.genreRepository = genreRepository;
+        this.googleCloudStorageService = googleCloudStorageService;
         this.languageRepository = languageRepository;
         this.studioRepository = studioRepository;
     }
@@ -102,6 +106,7 @@ public class DataInputService {
     private <T> ParsedFilmResult parseFilmFromJSON(Map<String, Object> jsonifiedFilm,
                                    FilmList listFoundIn) {
         Film newFilm = new Film();
+        String base64Poster = null;
         for (String key : jsonifiedFilm.keySet()) {
             switch (key) {
                 case "Name" ->
@@ -133,7 +138,7 @@ public class DataInputService {
                 case "Studio" ->
                         newFilm.setStudio(parseStudio((List<Object>) jsonifiedFilm.get(key)));
                 case "Base64 Poster" ->
-                        newFilm.setBase64Poster((String) jsonifiedFilm.get(key));
+                    base64Poster = (String) jsonifiedFilm.get(key);
             }
         }
 
@@ -141,6 +146,14 @@ public class DataInputService {
         final Film existingFilm = filmRepository.findByNameAndYear(newFilm.getName(), newFilm.getYear());
 
         if (existingFilm == null) {
+            // Wait until we have the film name + year to name the file to save the poster to
+            // Also make sure we only save this for new films to save cloud space
+            if (base64Poster != null) {
+                final String fileName = newFilm.getName() + "-" + newFilm.getYear();
+                googleCloudStorageService.uploadBase64Image(fileName, base64Poster);
+                newFilm.setPosterUrl(IMAGE_BUCKET_URL + fileName);
+            }
+
             if (listFoundIn != null) {
                 newFilm.setListsFoundIn(new HashSet<>(Set.of(listFoundIn)));
             } else {

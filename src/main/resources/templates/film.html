@@ -62,7 +62,7 @@
             </div>
         </div>
         <div class="col">
-            <img th:src="'data:image/jpeg;base64,' + ${film.base64Poster}" th:alt="${film.name}">
+            <img th:src="${film.posterUrl}" th:alt="${film.name}">
         </div>
         <div class="col">
             <div class="row row-cols-1">

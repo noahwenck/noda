@@ -20,7 +20,7 @@ public class Film extends BaseEntity {
     private double averageRating;
     private Set<Genre> genre;
     private Set<Studio> studio;
-    private String base64Poster;
+    private String posterUrl;
     private Set<FilmList> listsFoundIn;
     public Film() {
         // Hi there!
@@ -160,13 +160,13 @@ public class Film extends BaseEntity {
         this.studio = studio;
     }
 
-    @Column(name = "BASE64_POSTER", columnDefinition = "LONGTEXT")
-    public String getBase64Poster() {
-        return base64Poster;
+    @Column(name = "POSTER_URL")
+    public String getPosterUrl() {
+        return posterUrl;
     }
 
-    public void setBase64Poster(String base64Poster) {
-        this.base64Poster = base64Poster;
+    public void setPosterUrl(String posterUrl) {
+        this.posterUrl = posterUrl;
     }
 
     @ManyToMany

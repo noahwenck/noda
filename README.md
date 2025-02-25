@@ -8,7 +8,7 @@ with data collected from my [letterboxdWebScraper](https://github.com/noahwenck/
 ## Tech Stack
 - **Languages**: Java, JavaScript, Python (letterboxdWebScraper)
 - **Frameworks**: Spring Boot, Bootstrap, Flask (letterboxdWebScraper)
-- **Misc**: MariaDB, Docker, Gradle
+- **Misc**: MariaDB, Docker, Gradle, Google Cloud
 
 ## Installation
 
@@ -17,13 +17,15 @@ with data collected from my [letterboxdWebScraper](https://github.com/noahwenck/
    git clone git@github.com:noahwenck/noda.git
    ```
 2. Ensure the following dependencies are installed:
-   - [Java](https://www.oracle.com/java/technologies/downloads/?er=221886) (should work just as well with Java 18 or newer)
+   - [Java](https://www.oracle.com/java/technologies/downloads/?er=221886) (should work just as well with Java 20 or newer)
    - [Docker Desktop](https://www.docker.com/)
    - [Gradle](https://gradle.org/)
 3. Run a Gradle build:
    ```sh
    ./gradlew build
    ```
+4. Download the service key for the noda-service-account Google Cloud IAM account. (Contact me)
+5. Create a `GOOGLE_APPLICATION_CREDENTIALS` env variable pointing to the service key from step 4. 
 
 ## Running
 
@@ -37,6 +39,6 @@ with data collected from my [letterboxdWebScraper](https://github.com/noahwenck/
         ```
         ./gradlew bootRun
         ```
-3. To start up the Noda Flask App (necessary to collect data), follow the 
+3. To start up the Shinoda Flask App (necessary to collect data), follow the 
 [steps found here](https://github.com/noahwenck/letterboxdWebScraper?tab=readme-ov-file#connect-to-noda).
 4. Navigate to [localhost:8080](http://localhost:8080).
