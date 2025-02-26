@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.example'
-version = '0.0.1-SNAPSHOT'
+version = '1.0.0'
 
 java {
     toolchain {
@@ -18,17 +18,27 @@ repositories {
 }
 
 dependencies {
+    // Google Cloud Dependendencies
     implementation 'com.google.cloud:google-cloud-storage:2.1.5'
+    implementation 'com.google.cloud.sql:mysql-socket-factory-connector-j-8:1.23.1'
+    implementation 'com.google.auth:google-auth-library-oauth2-http:1.17.0'
+    implementation 'com.google.api-client:google-api-client:1.31.1'
 
+
+    // Spring Dependencies
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-configuration-processor:3.3.3'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
+    // Misc.
     implementation 'org.json:json:20240303'
 
+    // Java connectors for dbs
     implementation 'org.mariadb.jdbc:mariadb-java-client:3.4.1'
+    implementation 'com.mysql:mysql-connector-j'
 
+    // Test dependencies
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
