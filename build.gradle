@@ -18,7 +18,7 @@ repositories {
 }
 
 dependencies {
-    // Google Cloud Dependendencies
+    // Google Cloud Dependencies
     implementation 'com.google.cloud:google-cloud-storage:2.1.5'
     implementation 'com.google.cloud.sql:mysql-socket-factory-connector-j-8:1.23.1'
     implementation 'com.google.auth:google-auth-library-oauth2-http:1.17.0'
