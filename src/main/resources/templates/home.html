@@ -135,12 +135,15 @@
     <h2>No films returned for this search.</h2>
 </div>
 
-<div class="container-fluid text-center bg-secondary" th:if="${error==null and elements!=null and !elements.isEmpty()}" th:data-elements="${type}">
+<div class="container-fluid text-center bg-secondary full-screen-bg" th:if="${error==null and elements!=null and !elements.isEmpty()}" th:data-elements="${type}">
     <div id="list-title" class="title text-white" th:if="${isList!=null and isList}">
         <h1 th:text="${listName}"></h1>
     </div>
-    <div id="elements-rows" class="row gy-1 gx-1">
-        <div class="col" th:each="element : ${elements}">
+    <div class="row gy-1 gx-1" id="elements-rows">
+        <div class="row-12" id="buffer-row">
+            <!-- Buffer row -->
+        </div>
+        <div class="col" id="element-row" th:each="element : ${elements}">
             <div class="image-container" th:if="${type == 'films'}">
                 <a>
                     <img class="rounded image-container" th:src="${element.posterUrl}" th:alt="${element.name}" width="100px" height="auto">

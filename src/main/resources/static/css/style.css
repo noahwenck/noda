@@ -10,3 +10,8 @@
 .image-container:hover img {
     transform: scale(1.1); /* Slightly enlarge the image */
 }
+
+.full-screen-bg {
+    height: 100vh;
+    width: 100vw;
+}

@@ -151,14 +151,16 @@ function updateSearchDiv() {
  */
 function addLinksToElements() {
     for (const child of document.getElementById("elements-rows").children) {
-        let elementToEdit = child;
+        if (child.id !== "buffer-row") {
+            let elementToEdit = child;
 
-        // If we are displaying films (images, we have an extra div nesting that we need to get through
-        if (document.getElementsByClassName("image-container").length > 0) {
-            elementToEdit = child.children.item(0);
+            // If we are displaying films (images, we have an extra div nesting that we need to get through
+            if (document.getElementsByClassName("image-container").length > 0) {
+                elementToEdit = child.children.item(0);
+            }
+            elementToEdit.children.item(0).setAttribute("href",
+                nodaUrl + child.children.item(1).dataset.link);
         }
-        elementToEdit.children.item(0).setAttribute("href",
-            nodaUrl + child.children.item(1).dataset.link);
     }
 }
 
