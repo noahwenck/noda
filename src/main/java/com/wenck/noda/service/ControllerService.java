@@ -44,7 +44,7 @@ public class ControllerService<T> {
         model.addAttribute("shinodaUrl", nodaProperties.getShinodaUrl());
 
         // Anytime we are on the homepage, check the health of shinoda, and prompt an alert if it is down
-        if (!healthCheckService.checkHealthWebScraper()) {
+        if (!healthCheckService.checkShinodaHealth()) {
             model.addAttribute("healthError", true);
         }
     }

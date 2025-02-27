@@ -31,7 +31,7 @@ public class HealthCheckService {
      *
      * @return true if the shinoda app is up and running
      */
-    public boolean checkHealthWebScraper() {
+    public boolean checkShinodaHealth() {
         final UriComponents shinodaUriComponents = UriComponentsBuilder.fromHttpUrl(nodaProperties.getShinodaUrl())
                 .pathSegment("health", "check")
                 .build();
