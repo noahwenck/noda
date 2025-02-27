@@ -1,8 +1,8 @@
 package com.wenck.noda.service;
 
+import com.wenck.noda.NodaProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
@@ -11,18 +11,18 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 /**
- * Service for checking the health of external dependency services
+ * Service for checking the health of external services
  */
 @Service
 public class HealthCheckService {
     private static final Logger LOG = LoggerFactory.getLogger(HealthCheckService.class);
 
-    @Value("${shinoda.url}")
-    private String shinodaUrl;
-
+    private final NodaProperties nodaProperties;
     private final RestTemplate restTemplate;
 
-    public HealthCheckService(RestTemplate restTemplate) {
+    public HealthCheckService(NodaProperties nodaProperties,
+                              RestTemplate restTemplate) {
+        this.nodaProperties = nodaProperties;
         this.restTemplate = restTemplate;
     }
 
@@ -32,7 +32,7 @@ public class HealthCheckService {
      * @return true if the shinoda app is up and running
      */
     public boolean checkHealthWebScraper() {
-        final UriComponents shinodaUriComponents = UriComponentsBuilder.fromHttpUrl(shinodaUrl)
+        final UriComponents shinodaUriComponents = UriComponentsBuilder.fromHttpUrl(nodaProperties.getShinodaUrl())
                 .pathSegment("health", "check")
                 .build();
 

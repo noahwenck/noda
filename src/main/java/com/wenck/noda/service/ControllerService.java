@@ -1,6 +1,6 @@
 package com.wenck.noda.service;
 
-import org.springframework.beans.factory.annotation.Value;
+import com.wenck.noda.NodaProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
@@ -9,15 +9,13 @@ import java.util.List;
 @Service
 public class ControllerService<T> {
 
-    @Value("${shinoda.url}")
-    private String shinodaUrl;
-    @Value("${noda.url}")
-    private String nodaUrl;
-
     private final HealthCheckService healthCheckService;
+    private final NodaProperties nodaProperties;
 
-    public ControllerService(HealthCheckService healthCheckService) {
+    public ControllerService(HealthCheckService healthCheckService,
+                             NodaProperties nodaProperties) {
         this.healthCheckService = healthCheckService;
+        this.nodaProperties = nodaProperties;
     }
 
     /**
@@ -42,8 +40,8 @@ public class ControllerService<T> {
         model.addAttribute("type", type);
 
         // Allows configs to be accessed by thymeleaf
-        model.addAttribute("nodaUrl", nodaUrl);
-        model.addAttribute("shinodaUrl", shinodaUrl);
+        model.addAttribute("nodaUrl", nodaProperties.getNodaUrl());
+        model.addAttribute("shinodaUrl", nodaProperties.getShinodaUrl());
 
         // Anytime we are on the homepage, check the health of shinoda, and prompt an alert if it is down
         if (!healthCheckService.checkHealthWebScraper()) {
