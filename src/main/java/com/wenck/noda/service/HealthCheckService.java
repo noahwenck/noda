@@ -17,17 +17,20 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class HealthCheckService {
     private static final Logger LOG = LoggerFactory.getLogger(HealthCheckService.class);
 
+    private final GoogleCloudStorageService googleCloudStorageService;
     private final NodaProperties nodaProperties;
     private final RestTemplate restTemplate;
 
-    public HealthCheckService(NodaProperties nodaProperties,
+    public HealthCheckService(GoogleCloudStorageService googleCloudStorageService,
+                              NodaProperties nodaProperties,
                               RestTemplate restTemplate) {
+        this.googleCloudStorageService = googleCloudStorageService;
         this.nodaProperties = nodaProperties;
         this.restTemplate = restTemplate;
     }
 
     /**
-     * Quick check to see if the web scraper (shinoda app) is up and running
+     * Check to see if the web scraper (shinoda app) is running and accessible
      *
      * @return true if the shinoda app is up and running
      */
@@ -52,5 +55,18 @@ public class HealthCheckService {
 
         LOG.error("Failure to ping shinoda app.");
         return false;
+    }
+
+    /**
+     * Check to see if the Image Bucket exists and is accessible
+     *
+     * @return true if the Image Bucket exists and is accessible
+     */
+    public boolean checkGoogleCloudImageBucketHealth() {
+        final boolean healthy = googleCloudStorageService.checkImageBucketExists();
+        if (!healthy) {
+            LOG.error("Error accessing Image Bucket");
+        }
+        return healthy;
     }
 }

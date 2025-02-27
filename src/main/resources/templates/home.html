@@ -131,11 +131,15 @@
 <!--    </div>-->
 <!--</div>-->
 
+<!-- todo: make these look cleaner, and more clearly errors-->
 <div th:if="${error}">
     <h2>No films returned for this search.</h2>
 </div>
+<div th:if="${cloudError}">
+    <h2>Fatal issue with needed Cloud services.</h2>
+</div>
 
-<div class="container-fluid text-center bg-secondary full-screen-bg" th:if="${error==null and elements!=null and !elements.isEmpty()}" th:data-elements="${type}">
+<div class="container-fluid text-center bg-secondary full-screen-bg" th:if="${error==null and cloudError==null and elements!=null and !elements.isEmpty()}" th:data-elements="${type}">
     <div id="list-title" class="title text-white" th:if="${isList!=null and isList}">
         <h1 th:text="${listName}"></h1>
     </div>

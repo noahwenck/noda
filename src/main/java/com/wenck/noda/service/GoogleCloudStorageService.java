@@ -26,12 +26,24 @@ public class GoogleCloudStorageService {
 
     /**
      * Take the base64 encoded string of the movie poster, and save it to our Google cloud bucket
+     *
      * @param fileName film name + year to as the filename
      * @param base64Image base64 encoded string of the image
      */
     public void uploadBase64Image(String fileName, String base64Image) {
-        byte[] imageBytes = Base64.getDecoder().decode(base64Image);
-        Bucket bucket = storage.get(bucketName);
+        final byte[] imageBytes = Base64.getDecoder().decode(base64Image);
+        final Bucket bucket = storage.get(bucketName);
         bucket.create(fileName, new ByteArrayInputStream(imageBytes), "image/png");
+        // todo: messes with titles with odd characters, ref. What did the Lady Forget?
+    }
+
+    /**
+     * Checks to see if the Image Bucket exists
+     *
+     * @return true if the image bucket exists
+     */
+    public boolean checkImageBucketExists() {
+        final Bucket bucket = storage.get(bucketName);
+        return bucket != null;
     }
 }

@@ -21,6 +21,8 @@ class HealthCheckServiceTest {
     @InjectMocks
     private HealthCheckService healthCheckService;
     @Mock
+    private GoogleCloudStorageService googleCloudStorageService;
+    @Mock
     private NodaProperties nodaProperties;
     @Mock
     private RestTemplate restTemplate;
@@ -33,9 +35,9 @@ class HealthCheckServiceTest {
         when(nodaProperties.getShinodaUrl()).thenReturn(shinodaUrl);
         when(restTemplate.getForEntity(shinodaUrl + "/health/check", String.class)).thenReturn(response);
 
-        final boolean check = healthCheckService.checkShinodaHealth();
+        final boolean healthy = healthCheckService.checkShinodaHealth();
 
-        assertTrue(check);
+        assertTrue(healthy);
     }
 
     @Test
@@ -46,8 +48,26 @@ class HealthCheckServiceTest {
         when(nodaProperties.getShinodaUrl()).thenReturn(shinodaUrl);
         when(restTemplate.getForEntity(shinodaUrl + "/health/check", String.class)).thenReturn(response);
 
-        final boolean check = healthCheckService.checkShinodaHealth();
+        final boolean healthy = healthCheckService.checkShinodaHealth();
 
-        assertFalse(check);
+        assertFalse(healthy);
+    }
+
+    @Test
+    void checkGoogleCloudImageBucketHealthSuccess() {
+        when(googleCloudStorageService.checkImageBucketExists()).thenReturn(true);
+
+        final boolean healthy = healthCheckService.checkGoogleCloudImageBucketHealth();
+
+        assertTrue(healthy);
+    }
+
+    @Test
+    void checkGoogleCloudImageBucketHealthFailure() {
+        when(googleCloudStorageService.checkImageBucketExists()).thenReturn(false);
+
+        final boolean healthy = healthCheckService.checkGoogleCloudImageBucketHealth();
+
+        assertFalse(healthy);
     }
 }

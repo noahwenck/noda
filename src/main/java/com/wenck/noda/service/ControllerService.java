@@ -47,6 +47,11 @@ public class ControllerService<T> {
         if (!healthCheckService.checkShinodaHealth()) {
             model.addAttribute("healthError", true);
         }
+
+        // Also check to make sure Image Bucket is accessible, don't try to display anything if not.
+        if (!healthCheckService.checkGoogleCloudImageBucketHealth()) {
+            model.addAttribute("cloudError", true);
+        }
     }
 
     /**
