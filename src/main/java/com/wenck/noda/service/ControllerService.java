@@ -6,6 +6,9 @@ import org.springframework.ui.Model;
 
 import java.util.List;
 
+/**
+ * Service for managing Controller operations
+ */
 @Service
 public class ControllerService<T> {
 
@@ -34,7 +37,7 @@ public class ControllerService<T> {
                         "Genre",
                         "Country",
                         "Film",
-                        "List")); // Added in no particular order, I just don't care to reorder
+                        "List")); // Added in no particular order
 
         // Tells frontend how to properly render urls
         model.addAttribute("type", type);
