@@ -24,7 +24,6 @@ import java.util.function.Function;
 public class DataInputService {
 
     private static final Logger LOG = LoggerFactory.getLogger(DataInputService.class);
-    private static final String IMAGE_BUCKET_URL = "https://storage.cloud.google.com/noda-images/";
     private final CountryRepository countryRepository;
     private final DirectorRepository directorRepository;
     private final FilmListRepository filmListRepository;
@@ -153,8 +152,8 @@ public class DataInputService {
             // Also make sure we only save this for new films to save cloud space
             if (base64Poster != null) {
                 final String fileName = newFilm.getName() + "-" + newFilm.getYear();
-                googleCloudStorageService.uploadBase64Image(fileName, base64Poster);
-                newFilm.setPosterUrl(IMAGE_BUCKET_URL + fileName);
+                final String posterUrl = googleCloudStorageService.uploadBase64Image(fileName, base64Poster);
+                newFilm.setPosterUrl(posterUrl);
             }
 
             if (listFoundIn != null) {

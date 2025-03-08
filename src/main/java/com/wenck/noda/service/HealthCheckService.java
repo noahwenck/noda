@@ -64,8 +64,10 @@ public class HealthCheckService {
      */
     public boolean checkGoogleCloudImageBucketHealth() {
         final boolean healthy = googleCloudStorageService.checkImageBucketExists();
-        if (!healthy) {
-            LOG.error("Error accessing Image Bucket");
+        if (healthy) {
+            LOG.info("Successfully accessed Image Bucket");
+        } else {
+            LOG.error("Issue occurred while accessing Image Bucket");
         }
         return healthy;
     }
