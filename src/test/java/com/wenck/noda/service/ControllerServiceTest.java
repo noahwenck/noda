@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 /**
- * Test classs for {@link ControllerService}
+ * Test class for {@link ControllerService}
  */
 @ExtendWith(MockitoExtension.class)
 class ControllerServiceTest {
@@ -76,12 +76,21 @@ class ControllerServiceTest {
         assertEquals(type, model.getAttribute("type"));
         assertEquals(noda, model.getAttribute(noda));
         assertEquals(shinoda, model.getAttribute(shinoda));
-        assertNotNull(model.getAttribute("healthError"));
-        if (model.containsAttribute("healthError")) {
-        assertTrue((Boolean) model.getAttribute("healthError"));
+
+        final Boolean healthError = (Boolean) model.getAttribute("healthError");
+        if (healthError != null) {
+            assertTrue(healthError);
+        } else {
+            // healthError is null, but should be so fail
+            fail("healthError was null, but should be.");
         }
-        assertNotNull(model.getAttribute("cloudError"));
-        assertTrue((Boolean) model.getAttribute("cloudError"));
+        final Boolean cloudError = (Boolean) model.getAttribute("cloudError");
+        if (cloudError != null) {
+            assertTrue(cloudError);
+        } else {
+            // cloudError is null, but should be so fail
+            fail("cloudError was null, but should be.");
+        }
     }
 
     @Test
@@ -97,12 +106,16 @@ class ControllerServiceTest {
     @Test
     void testAppendListElementsToModelNull() {
         Model model = new ConcurrentModel();
-        final List<String> elements = null;
 
-        controllerService.appendListElementsToModel(elements, model);
+        controllerService.appendListElementsToModel(null, model);
 
-        assertNotNull(model.getAttribute("error"));
-        assertTrue((Boolean) model.getAttribute("error"));
+        final Boolean error = (Boolean) model.getAttribute("error");
+        if (error != null) {
+            assertTrue(error);
+        } else {
+            // Error is null, but should be so fail
+            fail("error was null, but should be.");
+        }
     }
 
     @Test
@@ -112,7 +125,12 @@ class ControllerServiceTest {
 
         controllerService.appendListElementsToModel(elements, model);
 
-        assertNotNull(model.getAttribute("error"));
-        assertTrue((Boolean) model.getAttribute("error"));
+        final Boolean error = (Boolean) model.getAttribute("error");
+        if (error != null) {
+            assertTrue(error);
+        } else {
+            // Error is null, but should be so fail
+            fail("error was null, but should be.");
+        }
     }
 }

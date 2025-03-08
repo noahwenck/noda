@@ -10,7 +10,7 @@ import java.util.List;
  * Service for managing Controller operations
  */
 @Service
-public class ControllerService<T> {
+public class ControllerService {
 
     private final HealthCheckService healthCheckService;
     private final NodaProperties nodaProperties;
@@ -62,7 +62,7 @@ public class ControllerService<T> {
      *
      * @param elements Generic list of elements to be attached to model
      */
-    public void appendListElementsToModel(List<T> elements, Model model) {
+    public void appendListElementsToModel(List<?> elements, Model model) {
         if (elements == null || elements.isEmpty()) {
             model.addAttribute("error", true);
         } else {
