@@ -30,6 +30,10 @@ public class GoogleCloudStorageService {
                 .getService();
     }
 
+    public void setStorage(Storage storage) {
+        this.storage = storage;
+    }
+
     /**
      * Take the base64 encoded string of the movie poster, and save it to our Google cloud bucket
      *
